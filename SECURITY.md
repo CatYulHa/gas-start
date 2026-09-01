@@ -37,3 +37,7 @@ and the repository ships **no credentials of any kind**:
 - Cell values are rendered as text by React; if you ever render HTML from sheet data,
   sanitize it first.
 - Keep dependencies current (Dependabot is configured in `.github/dependabot.yml`).
+- Error messages from the template (e.g. "Sheet X not found. Available sheets: …") are meant to help
+  first-time setup; for a production app consider logging details server-side and throwing generic errors.
+- The Python writer neutralises formula-like strings (`=`, `+`, `-`, `@`) by default so untrusted CSVs
+  cannot inject `=IMPORTXML(...)`/`=HYPERLINK(...)` into your sheet; use `--allow-formulas` deliberately.

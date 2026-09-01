@@ -31,7 +31,7 @@ gasstart-sheets seed          `data` 탭                   getDashboardData()   
 ## 시작하기 — 명령 하나
 
 ```bash
-git clone https://github.com/your-org/gas-start.git GasStart && cd GasStart
+git clone https://github.com/CatYulHa/gas-start.git GasStart && cd GasStart
 npm install
 npm run setup
 ```

@@ -65,6 +65,7 @@ export function ping(): string {
  * Script Property SPREADSHEET_ID by hand in Project Settings.
  */
 export function setup(spreadsheetId: string): string {
+  assertDeployer("setup"); // exported => callable by any viewer; it repoints the data source
   setSpreadsheetId(spreadsheetId);
   const ss = getSpreadsheet();
   return `Linked to "${ss.getName()}" (${ss.getUrl()})`;

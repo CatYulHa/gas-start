@@ -69,7 +69,7 @@ npm run push:prod && npm run deploy:prod      # 또는 dev
 
 ```ts
 // packages/gas/src/main.ts
-const ALLOWED = ["finance@company.com", "ops-lead@company.com"];      // 또는 Google 그룹을 시트에 관리
+const ALLOWED = ["finance@example.com", "ops-lead@example.com"];      // 또는 Google 그룹을 시트에 관리
 function assertAllowed() {
   const email = Session.getActiveUser().getEmail();               // DOMAIN + Workspace 에서는 항상 채워짐
   if (!ALLOWED.includes(email)) throw new Error("Not authorized");
@@ -77,7 +77,7 @@ function assertAllowed() {
 export function getDashboardData() { assertAllowed(); /* … */ }
 ```
 
-  Google 그룹 멤버십으로 판단하려면 `GroupsApp.getGroupByEmail("dash-viewers@company.com").hasUser(email)` (스코프 `https://www.googleapis.com/auth/groups` 추가).
+  Google 그룹 멤버십으로 판단하려면 `GroupsApp.getGroupByEmail("dash-viewers@example.com").hasUser(email)` (스코프 `https://www.googleapis.com/auth/groups` 추가).
 
 - **방문자 이메일 표시/감사 로그**: `Session.getActiveUser().getEmail()` 을 `console.log` 로 남기면 Cloud Logging 에 누가 언제 봤는지 남습니다(§7).
 

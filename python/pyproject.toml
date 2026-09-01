@@ -32,7 +32,7 @@ dev = [
 gasstart-sheets = "gasstart_sheets.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/your-org/gas-start"
+Homepage = "https://github.com/CatYulHa/gas-start"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/gasstart_sheets"]

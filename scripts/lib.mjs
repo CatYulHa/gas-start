@@ -32,7 +32,16 @@ export const rel = (file) => path.relative(root, file) || ".";
 export const readJson = (file) => JSON.parse(readFileSync(file, "utf8"));
 export const writeJson = (file, data) => writeFileSync(file, JSON.stringify(data, null, 2) + "\n");
 
-export const envFileFor = (env) => path.join(gasDir, `.clasp.${env}.json`);
+/** Environment names become file names — keep them to a safe charset and never "example". */
+export function assertEnvName(env) {
+  if (!/^[A-Za-z0-9_-]{1,32}$/.test(env) || env === "example") {
+    console.error(`Invalid environment name "${env}". Use letters, digits, "-" or "_" (not "example").`);
+    process.exit(1);
+  }
+  return env;
+}
+
+export const envFileFor = (env) => path.join(gasDir, `.clasp.${assertEnvName(env)}.json`);
 
 /** Creates .clasp.<env>.json from the example template if missing. Returns true if created. */
 export function ensureEnvFile(env) {
@@ -102,6 +111,7 @@ export function runClasp(args, { capture = false, label = "", quiet = false } = 
 
 /** Runs an npm script at the repo root (inherits stdio, exits on failure). */
 export function runNpm(script) {
+  if (!/^[a-z][a-z0-9:-]*$/.test(script)) throw new Error(`refusing to run npm script "${script}"`);
   console.log(`npm run ${script}`);
   const result = spawnSync(`npm run ${script}`, { cwd: root, stdio: "inherit", shell: true });
   if (result.status !== 0) process.exit(result.status ?? 1);
@@ -168,9 +178,15 @@ export async function appsScriptApiStatus(accessToken) {
 
 /** Opens a URL in the default browser without blocking. */
 export function openInBrowser(url) {
-  const cmd =
-    process.platform === "win32" ? `start "" "${url}"` : process.platform === "darwin" ? `open "${url}"` : `xdg-open "${url}"`;
-  spawn(cmd, { shell: true, detached: true, stdio: "ignore" }).unref();
+  if (!/^https:\/\/[\w.-]+(\/[\w./?=&%-]*)?$/.test(url)) throw new Error(`refusing to open ${url}`);
+  // argv form (no shell string) so the URL can never be interpreted as shell syntax
+  const [cmd, args] =
+    process.platform === "win32"
+      ? ["cmd.exe", ["/c", "start", "", url]]
+      : process.platform === "darwin"
+        ? ["open", [url]]
+        : ["xdg-open", [url]];
+  spawn(cmd, args, { detached: true, stdio: "ignore" }).unref();
 }
 
 export const isInteractive = () => Boolean(process.stdin.isTTY && process.stdout.isTTY);

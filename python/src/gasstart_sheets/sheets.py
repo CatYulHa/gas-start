@@ -98,17 +98,33 @@ def read_df(gc: gspread.Client, spreadsheet: str, worksheet: str, *, numeric: bo
 # -------------------------------------------------------------------------- write
 
 
-def df_to_values(df: pd.DataFrame, *, index: bool = False) -> list[list[Any]]:
-    """Serialise a DataFrame to a header row + JSON-safe cell values."""
+_FORMULA_PREFIX = ("=", "+", "-", "@", "\t", "\r")
+
+
+def df_to_values(df: pd.DataFrame, *, index: bool = False, allow_formulas: bool = False) -> list[list[Any]]:
+    """Serialise a DataFrame to a header row + JSON-safe cell values.
+
+    Strings that a spreadsheet would interpret as formulas (``=SUM(...)``, ``+1``,
+    ``-x``, ``@name``) are prefixed with ``'`` so they stay literal text — CSV
+    formula injection (``=IMPORTXML(...)`` exfiltration, ``=HYPERLINK`` phishing)
+    is a classic attack on sheets fed from untrusted files. Pass
+    ``allow_formulas=True`` only for data you generated yourself.
+    """
     frame = df.reset_index() if index else df
-    header = [str(c) for c in frame.columns]
+    header = [_text(str(c), allow_formulas) for c in frame.columns]
     rows: list[list[Any]] = [header]
     for record in frame.itertuples(index=False, name=None):
-        rows.append([_cell(v) for v in record])
+        rows.append([_cell(v, allow_formulas) for v in record])
     return rows
 
 
-def _cell(v: Any) -> Any:
+def _text(s: str, allow_formulas: bool) -> str:
+    if not allow_formulas and s.startswith(_FORMULA_PREFIX):
+        return "'" + s
+    return s
+
+
+def _cell(v: Any, allow_formulas: bool = False) -> Any:
     if v is None or (isinstance(v, float) and pd.isna(v)) or v is pd.NA or v is pd.NaT:
         return ""
     if isinstance(v, pd.Timestamp):
@@ -117,9 +133,11 @@ def _cell(v: Any) -> Any:
         return v.isoformat()
     if hasattr(v, "item"):  # numpy scalar -> python scalar
         v = v.item()
-    if isinstance(v, bool | int | float | str):
+    if isinstance(v, str):
+        return _text(v, allow_formulas)
+    if isinstance(v, bool | int | float):
         return v
-    return str(v)
+    return _text(str(v), allow_formulas)
 
 
 def write_values(ws: WorksheetLike, values: list[list[Any]], *, clear: bool = True) -> None:
@@ -141,9 +159,13 @@ def write_df(
     index: bool = False,
     clear: bool = True,
     create: bool = True,
+    allow_formulas: bool = False,
 ) -> int:
-    """Write ``df`` to a worksheet (creating it if needed). Returns the number of data rows written."""
+    """Write ``df`` to a worksheet (creating it if needed). Returns the number of data rows written.
+
+    ``allow_formulas=False`` (default) neutralises formula-like strings — see :func:`df_to_values`.
+    """
     ws = get_worksheet(open_spreadsheet(gc, spreadsheet), worksheet, create=create)
-    values = df_to_values(df, index=index)
+    values = df_to_values(df, index=index, allow_formulas=allow_formulas)
     write_values(ws, values, clear=clear)
     return len(values) - 1

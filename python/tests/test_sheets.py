@@ -68,6 +68,29 @@ def test_df_to_values_serialises_types():
     assert values[2] == ["2026-01-02", "", False, ""]
 
 
+def test_formula_like_strings_are_neutralised_by_default():
+    evil = '=IMPORTXML("https://evil", "//a")'
+    df = pd.DataFrame({"note": [evil, "+1", "-x", "@user", "plain", "a=b"]})
+    values = df_to_values(df)
+    assert [r[0] for r in values[1:]] == ["'" + evil, "'+1", "'-x", "'@user", "plain", "a=b"]
+    # header cells too
+    assert df_to_values(pd.DataFrame(columns=["=cmd"]))[0] == ["'=cmd"]
+    # numbers are untouched, opt-in keeps formulas
+    assert df_to_values(pd.DataFrame({"n": [-5]}))[1] == [-5]
+    assert df_to_values(df, allow_formulas=True)[1] == [evil]
+
+
+def test_find_secrets_dir_stops_at_repo_root(tmp_path):
+    from gasstart_sheets.auth import find_secrets_dir
+
+    (tmp_path / ".secrets").mkdir()  # planted above the repo
+    repo = tmp_path / "repo"
+    (repo / ".git").mkdir(parents=True)
+    inner = repo / "python"
+    inner.mkdir()
+    assert find_secrets_dir(inner) == (inner / ".secrets").resolve()
+
+
 def test_roundtrip_through_fake_worksheet():
     df = sample_frame(days=3, end=dt.date(2026, 9, 1))
     ws = FakeWorksheet()

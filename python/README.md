@@ -9,7 +9,7 @@ pip install -e ".[dev]"          # or: uv pip install -e ".[dev]"
 gasstart-sheets auth              # 1st run: browser consent -> .secrets/token.json
 gasstart-sheets seed  <SHEET_ID>  # sample rows into the `data` tab
 gasstart-sheets read  <SHEET_ID> data --out data.csv
-gasstart-sheets write data.csv <SHEET_ID> data
+gasstart-sheets write data.csv <SHEET_ID> data   # add --allow-formulas to let =... cells be formulas
 ```
 
 ```python

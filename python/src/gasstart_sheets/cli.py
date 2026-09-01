@@ -86,6 +86,13 @@ def write(
     append: Annotated[
         bool, typer.Option("--append", help="Append below existing rows instead of replacing")
     ] = False,
+    allow_formulas: Annotated[
+        bool,
+        typer.Option(
+            "--allow-formulas",
+            help="Let cells starting with = + - @ become live formulas (default: written as text)",
+        ),
+    ] = False,
 ) -> None:
     """Upload a CSV file to a worksheet (replaces the tab's contents by default)."""
     gc = _client()
@@ -93,7 +100,7 @@ def write(
     if append:
         existing = read_df(gc, spreadsheet, worksheet)
         df = pd.concat([existing, df], ignore_index=True)
-    n = write_df(gc, spreadsheet, worksheet, df)
+    n = write_df(gc, spreadsheet, worksheet, df, allow_formulas=allow_formulas)
     typer.echo(f"Wrote {n} rows to '{worksheet}'")
 
 

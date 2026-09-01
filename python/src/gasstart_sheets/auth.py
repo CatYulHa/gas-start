@@ -44,6 +44,8 @@ def find_secrets_dir(start: Path | None = None) -> Path:
         candidate = folder / SECRETS_DIRNAME
         if candidate.is_dir():
             return candidate
+        if (folder / ".git").exists():
+            break  # stop at the repository root — never pick up a .secrets/ planted above it
     return start / SECRETS_DIRNAME
 
 
@@ -99,12 +101,23 @@ def get_client(
             f"{cred_path}. Then run `gasstart-sheets auth` once to create the token."
         )
 
-    token_path.parent.mkdir(parents=True, exist_ok=True)
-    return gspread.oauth(
+    token_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    client = gspread.oauth(
         scopes=scopes or SCOPES,
         credentials_filename=str(cred_path),
         authorized_user_filename=str(token_path),
     )
+    _restrict_permissions(token_path)
+    return client
+
+
+def _restrict_permissions(path: Path) -> None:
+    """Best effort: the cached token holds a refresh token, so keep it owner-only (no-op on Windows ACLs)."""
+    try:
+        if path.is_file():
+            os.chmod(path, 0o600)
+    except OSError:
+        pass
 
 
 def revoke_token(token: str | os.PathLike[str] | None = None) -> bool:

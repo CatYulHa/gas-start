@@ -11,9 +11,14 @@ on:
   # push:
   #   tags: ["v*"]
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Optional hardening: create a "prod" environment with required reviewers in repo settings.
+    environment: prod
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,4 +41,7 @@ jobs:
             > packages/gas/.clasp.prod.json
 
       - run: node scripts/clasp.mjs prod push
-      - run: node scripts/clasp.mjs prod deploy "CI ${{ github.ref_name }} ${{ github.sha }}"
+      - name: Deploy
+        env:
+          REF_NAME: ${{ github.ref_name }}   # via env, never interpolated into the shell
+        run: node scripts/clasp.mjs prod deploy "CI $REF_NAME $GITHUB_SHA"
