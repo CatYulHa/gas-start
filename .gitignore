@@ -1,0 +1,37 @@
+# dependencies / build
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+
+# clasp — per-environment project files hold your scriptId; keep them local
+packages/gas/.clasp.json
+packages/gas/.clasp.*.json
+!packages/gas/.clasp.example.json
+.clasprc.json
+
+# secrets (OAuth client, cached tokens, service accounts)
+.secrets/
+*.pickle
+token.json
+credentials.json
+service_account.json
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+python/build/
+python/dist/
+.pytest_cache/
+.ruff_cache/
+
+# editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log

@@ -1,0 +1,19 @@
+{
+  "name": "@gasstart/gas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Apps Script backend (TypeScript, bundled with Vite into dist/Code.js)",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@gasstart/shared": "*"
+  },
+  "devDependencies": {
+    "@gas-plugin/unplugin": "^0.2.2",
+    "@types/google-apps-script": "^2.0.12",
+    "vite": "^8.2.2"
+  }
+}

@@ -1,0 +1,5 @@
+---
+description: GasStart project rules
+alwaysApply: true
+---
+Follow `AGENTS.md` at the repository root. It defines the layout, the three-edit rule for adding server functions (main.ts export + ServerApi + vite globals), JSON-only data across google.script.run, and the verification commands (`npm run typecheck && npm run build`).

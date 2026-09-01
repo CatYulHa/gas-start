@@ -1,0 +1,39 @@
+# Optional: push + deploy the prod Apps Script project from CI.
+#
+# Disabled by default (manual trigger only). To enable:
+#   1. Run `clasp login` locally, then copy ~/.clasprc.json into a repo secret CLASPRC_JSON.
+#   2. Add secrets CLASP_PROD_SCRIPT_ID and (optionally) CLASP_PROD_DEPLOYMENT_ID.
+#   3. Uncomment the `push: tags:` trigger below to deploy on version tags.
+name: Deploy (prod)
+
+on:
+  workflow_dispatch:
+  # push:
+  #   tags: ["v*"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      - name: Write clasp credentials and prod project file
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+          SCRIPT_ID: ${{ secrets.CLASP_PROD_SCRIPT_ID }}
+          DEPLOYMENT_ID: ${{ secrets.CLASP_PROD_DEPLOYMENT_ID }}
+        run: |
+          test -n "$CLASPRC_JSON" || { echo "CLASPRC_JSON secret missing"; exit 1; }
+          test -n "$SCRIPT_ID"    || { echo "CLASP_PROD_SCRIPT_ID secret missing"; exit 1; }
+          echo "$CLASPRC_JSON" > ~/.clasprc.json
+          printf '{"scriptId":"%s","rootDir":"dist","deploymentId":"%s"}\n' "$SCRIPT_ID" "$DEPLOYMENT_ID" \
+            > packages/gas/.clasp.prod.json
+
+      - run: node scripts/clasp.mjs prod push
+      - run: node scripts/clasp.mjs prod deploy "CI ${{ github.ref_name }} ${{ github.sha }}"

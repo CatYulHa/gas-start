@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gasstart-sheets"
+version = "0.1.0"
+description = "Read/write Google Sheets as pandas DataFrames with a cached OAuth token (token.json, like the classic token.pickle flow)"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "GasStart contributors" }]
+keywords = ["google-sheets", "gspread", "pandas", "apps-script", "etl"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Office/Business :: Financial :: Spreadsheet",
+]
+dependencies = [
+  "gspread>=6.1",
+  "pandas>=2.2",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+gasstart-sheets = "gasstart_sheets.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/your-org/gas-start"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gasstart_sheets"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

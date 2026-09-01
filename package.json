@@ -1,0 +1,42 @@
+{
+  "name": "gasstart",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Google Apps Script starter: TypeScript + clasp (dev/prod) + React/Vite dashboard + Python (pandas/gspread) ETL",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "setup:prod": "node scripts/setup.mjs --env prod",
+    "dev": "npm run dev -w @gasstart/dashboard",
+    "clean": "node scripts/clean.mjs",
+    "build": "npm run clean && npm run build -w @gasstart/dashboard && npm run build -w @gasstart/gas",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "login": "clasp login",
+    "create:dev": "node scripts/clasp.mjs dev create",
+    "create:prod": "node scripts/clasp.mjs prod create",
+    "push:dev": "npm run build && node scripts/clasp.mjs dev push",
+    "push:prod": "npm run build && node scripts/clasp.mjs prod push",
+    "deploy:dev": "node scripts/clasp.mjs dev deploy",
+    "deploy:prod": "node scripts/clasp.mjs prod deploy",
+    "open:dev": "node scripts/clasp.mjs dev open",
+    "open:prod": "node scripts/clasp.mjs prod open",
+    "web:dev": "node scripts/clasp.mjs dev web",
+    "web:prod": "node scripts/clasp.mjs prod web",
+    "status:dev": "node scripts/clasp.mjs dev status",
+    "deployments:prod": "node scripts/clasp.mjs prod deployments",
+    "clasp": "node scripts/clasp.mjs",
+    "sheet:dev": "node scripts/clasp.mjs dev sheet",
+    "sheet:prod": "node scripts/clasp.mjs prod sheet"
+  },
+  "devDependencies": {
+    "@google/clasp": "^3.4.1",
+    "typescript": "^5.9.3"
+  }
+}

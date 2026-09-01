@@ -1,0 +1,1358 @@
+{
+  "spreadsheetName": "GasStart Sample (mock)",
+  "spreadsheetUrl": "https://docs.google.com/spreadsheets/",
+  "sheetName": "data",
+  "updatedAt": "2026-09-01T00:00:00.000Z",
+  "rows": [
+    {
+      "date": "2026-06-03",
+      "category": "Web",
+      "value": 123
+    },
+    {
+      "date": "2026-06-03",
+      "category": "Mobile",
+      "value": 91
+    },
+    {
+      "date": "2026-06-03",
+      "category": "Store",
+      "value": 67
+    },
+    {
+      "date": "2026-06-04",
+      "category": "Web",
+      "value": 128
+    },
+    {
+      "date": "2026-06-04",
+      "category": "Mobile",
+      "value": 97
+    },
+    {
+      "date": "2026-06-04",
+      "category": "Store",
+      "value": 64
+    },
+    {
+      "date": "2026-06-05",
+      "category": "Web",
+      "value": 122
+    },
+    {
+      "date": "2026-06-05",
+      "category": "Mobile",
+      "value": 81
+    },
+    {
+      "date": "2026-06-05",
+      "category": "Store",
+      "value": 52
+    },
+    {
+      "date": "2026-06-06",
+      "category": "Web",
+      "value": 78
+    },
+    {
+      "date": "2026-06-06",
+      "category": "Mobile",
+      "value": 60
+    },
+    {
+      "date": "2026-06-06",
+      "category": "Store",
+      "value": 49
+    },
+    {
+      "date": "2026-06-07",
+      "category": "Web",
+      "value": 91
+    },
+    {
+      "date": "2026-06-07",
+      "category": "Mobile",
+      "value": 67
+    },
+    {
+      "date": "2026-06-07",
+      "category": "Store",
+      "value": 41
+    },
+    {
+      "date": "2026-06-08",
+      "category": "Web",
+      "value": 113
+    },
+    {
+      "date": "2026-06-08",
+      "category": "Mobile",
+      "value": 81
+    },
+    {
+      "date": "2026-06-08",
+      "category": "Store",
+      "value": 68
+    },
+    {
+      "date": "2026-06-09",
+      "category": "Web",
+      "value": 136
+    },
+    {
+      "date": "2026-06-09",
+      "category": "Mobile",
+      "value": 101
+    },
+    {
+      "date": "2026-06-09",
+      "category": "Store",
+      "value": 61
+    },
+    {
+      "date": "2026-06-10",
+      "category": "Web",
+      "value": 115
+    },
+    {
+      "date": "2026-06-10",
+      "category": "Mobile",
+      "value": 102
+    },
+    {
+      "date": "2026-06-10",
+      "category": "Store",
+      "value": 53
+    },
+    {
+      "date": "2026-06-11",
+      "category": "Web",
+      "value": 134
+    },
+    {
+      "date": "2026-06-11",
+      "category": "Mobile",
+      "value": 106
+    },
+    {
+      "date": "2026-06-11",
+      "category": "Store",
+      "value": 68
+    },
+    {
+      "date": "2026-06-12",
+      "category": "Web",
+      "value": 110
+    },
+    {
+      "date": "2026-06-12",
+      "category": "Mobile",
+      "value": 89
+    },
+    {
+      "date": "2026-06-12",
+      "category": "Store",
+      "value": 65
+    },
+    {
+      "date": "2026-06-13",
+      "category": "Web",
+      "value": 76
+    },
+    {
+      "date": "2026-06-13",
+      "category": "Mobile",
+      "value": 61
+    },
+    {
+      "date": "2026-06-13",
+      "category": "Store",
+      "value": 44
+    },
+    {
+      "date": "2026-06-14",
+      "category": "Web",
+      "value": 95
+    },
+    {
+      "date": "2026-06-14",
+      "category": "Mobile",
+      "value": 61
+    },
+    {
+      "date": "2026-06-14",
+      "category": "Store",
+      "value": 44
+    },
+    {
+      "date": "2026-06-15",
+      "category": "Web",
+      "value": 107
+    },
+    {
+      "date": "2026-06-15",
+      "category": "Mobile",
+      "value": 96
+    },
+    {
+      "date": "2026-06-15",
+      "category": "Store",
+      "value": 64
+    },
+    {
+      "date": "2026-06-16",
+      "category": "Web",
+      "value": 132
+    },
+    {
+      "date": "2026-06-16",
+      "category": "Mobile",
+      "value": 100
+    },
+    {
+      "date": "2026-06-16",
+      "category": "Store",
+      "value": 70
+    },
+    {
+      "date": "2026-06-17",
+      "category": "Web",
+      "value": 138
+    },
+    {
+      "date": "2026-06-17",
+      "category": "Mobile",
+      "value": 87
+    },
+    {
+      "date": "2026-06-17",
+      "category": "Store",
+      "value": 70
+    },
+    {
+      "date": "2026-06-18",
+      "category": "Web",
+      "value": 124
+    },
+    {
+      "date": "2026-06-18",
+      "category": "Mobile",
+      "value": 107
+    },
+    {
+      "date": "2026-06-18",
+      "category": "Store",
+      "value": 57
+    },
+    {
+      "date": "2026-06-19",
+      "category": "Web",
+      "value": 141
+    },
+    {
+      "date": "2026-06-19",
+      "category": "Mobile",
+      "value": 90
+    },
+    {
+      "date": "2026-06-19",
+      "category": "Store",
+      "value": 55
+    },
+    {
+      "date": "2026-06-20",
+      "category": "Web",
+      "value": 89
+    },
+    {
+      "date": "2026-06-20",
+      "category": "Mobile",
+      "value": 58
+    },
+    {
+      "date": "2026-06-20",
+      "category": "Store",
+      "value": 40
+    },
+    {
+      "date": "2026-06-21",
+      "category": "Web",
+      "value": 102
+    },
+    {
+      "date": "2026-06-21",
+      "category": "Mobile",
+      "value": 62
+    },
+    {
+      "date": "2026-06-21",
+      "category": "Store",
+      "value": 43
+    },
+    {
+      "date": "2026-06-22",
+      "category": "Web",
+      "value": 133
+    },
+    {
+      "date": "2026-06-22",
+      "category": "Mobile",
+      "value": 103
+    },
+    {
+      "date": "2026-06-22",
+      "category": "Store",
+      "value": 66
+    },
+    {
+      "date": "2026-06-23",
+      "category": "Web",
+      "value": 141
+    },
+    {
+      "date": "2026-06-23",
+      "category": "Mobile",
+      "value": 100
+    },
+    {
+      "date": "2026-06-23",
+      "category": "Store",
+      "value": 67
+    },
+    {
+      "date": "2026-06-24",
+      "category": "Web",
+      "value": 114
+    },
+    {
+      "date": "2026-06-24",
+      "category": "Mobile",
+      "value": 91
+    },
+    {
+      "date": "2026-06-24",
+      "category": "Store",
+      "value": 57
+    },
+    {
+      "date": "2026-06-25",
+      "category": "Web",
+      "value": 146
+    },
+    {
+      "date": "2026-06-25",
+      "category": "Mobile",
+      "value": 112
+    },
+    {
+      "date": "2026-06-25",
+      "category": "Store",
+      "value": 60
+    },
+    {
+      "date": "2026-06-26",
+      "category": "Web",
+      "value": 143
+    },
+    {
+      "date": "2026-06-26",
+      "category": "Mobile",
+      "value": 90
+    },
+    {
+      "date": "2026-06-26",
+      "category": "Store",
+      "value": 64
+    },
+    {
+      "date": "2026-06-27",
+      "category": "Web",
+      "value": 80
+    },
+    {
+      "date": "2026-06-27",
+      "category": "Mobile",
+      "value": 59
+    },
+    {
+      "date": "2026-06-27",
+      "category": "Store",
+      "value": 41
+    },
+    {
+      "date": "2026-06-28",
+      "category": "Web",
+      "value": 88
+    },
+    {
+      "date": "2026-06-28",
+      "category": "Mobile",
+      "value": 70
+    },
+    {
+      "date": "2026-06-28",
+      "category": "Store",
+      "value": 53
+    },
+    {
+      "date": "2026-06-29",
+      "category": "Web",
+      "value": 129
+    },
+    {
+      "date": "2026-06-29",
+      "category": "Mobile",
+      "value": 96
+    },
+    {
+      "date": "2026-06-29",
+      "category": "Store",
+      "value": 63
+    },
+    {
+      "date": "2026-06-30",
+      "category": "Web",
+      "value": 138
+    },
+    {
+      "date": "2026-06-30",
+      "category": "Mobile",
+      "value": 97
+    },
+    {
+      "date": "2026-06-30",
+      "category": "Store",
+      "value": 57
+    },
+    {
+      "date": "2026-07-01",
+      "category": "Web",
+      "value": 143
+    },
+    {
+      "date": "2026-07-01",
+      "category": "Mobile",
+      "value": 98
+    },
+    {
+      "date": "2026-07-01",
+      "category": "Store",
+      "value": 73
+    },
+    {
+      "date": "2026-07-02",
+      "category": "Web",
+      "value": 120
+    },
+    {
+      "date": "2026-07-02",
+      "category": "Mobile",
+      "value": 106
+    },
+    {
+      "date": "2026-07-02",
+      "category": "Store",
+      "value": 67
+    },
+    {
+      "date": "2026-07-03",
+      "category": "Web",
+      "value": 145
+    },
+    {
+      "date": "2026-07-03",
+      "category": "Mobile",
+      "value": 104
+    },
+    {
+      "date": "2026-07-03",
+      "category": "Store",
+      "value": 67
+    },
+    {
+      "date": "2026-07-04",
+      "category": "Web",
+      "value": 92
+    },
+    {
+      "date": "2026-07-04",
+      "category": "Mobile",
+      "value": 65
+    },
+    {
+      "date": "2026-07-04",
+      "category": "Store",
+      "value": 40
+    },
+    {
+      "date": "2026-07-05",
+      "category": "Web",
+      "value": 90
+    },
+    {
+      "date": "2026-07-05",
+      "category": "Mobile",
+      "value": 72
+    },
+    {
+      "date": "2026-07-05",
+      "category": "Store",
+      "value": 44
+    },
+    {
+      "date": "2026-07-06",
+      "category": "Web",
+      "value": 155
+    },
+    {
+      "date": "2026-07-06",
+      "category": "Mobile",
+      "value": 111
+    },
+    {
+      "date": "2026-07-06",
+      "category": "Store",
+      "value": 70
+    },
+    {
+      "date": "2026-07-07",
+      "category": "Web",
+      "value": 120
+    },
+    {
+      "date": "2026-07-07",
+      "category": "Mobile",
+      "value": 116
+    },
+    {
+      "date": "2026-07-07",
+      "category": "Store",
+      "value": 70
+    },
+    {
+      "date": "2026-07-08",
+      "category": "Web",
+      "value": 140
+    },
+    {
+      "date": "2026-07-08",
+      "category": "Mobile",
+      "value": 91
+    },
+    {
+      "date": "2026-07-08",
+      "category": "Store",
+      "value": 60
+    },
+    {
+      "date": "2026-07-09",
+      "category": "Web",
+      "value": 150
+    },
+    {
+      "date": "2026-07-09",
+      "category": "Mobile",
+      "value": 108
+    },
+    {
+      "date": "2026-07-09",
+      "category": "Store",
+      "value": 68
+    },
+    {
+      "date": "2026-07-10",
+      "category": "Web",
+      "value": 149
+    },
+    {
+      "date": "2026-07-10",
+      "category": "Mobile",
+      "value": 107
+    },
+    {
+      "date": "2026-07-10",
+      "category": "Store",
+      "value": 76
+    },
+    {
+      "date": "2026-07-11",
+      "category": "Web",
+      "value": 92
+    },
+    {
+      "date": "2026-07-11",
+      "category": "Mobile",
+      "value": 64
+    },
+    {
+      "date": "2026-07-11",
+      "category": "Store",
+      "value": 48
+    },
+    {
+      "date": "2026-07-12",
+      "category": "Web",
+      "value": 84
+    },
+    {
+      "date": "2026-07-12",
+      "category": "Mobile",
+      "value": 81
+    },
+    {
+      "date": "2026-07-12",
+      "category": "Store",
+      "value": 46
+    },
+    {
+      "date": "2026-07-13",
+      "category": "Web",
+      "value": 147
+    },
+    {
+      "date": "2026-07-13",
+      "category": "Mobile",
+      "value": 104
+    },
+    {
+      "date": "2026-07-13",
+      "category": "Store",
+      "value": 60
+    },
+    {
+      "date": "2026-07-14",
+      "category": "Web",
+      "value": 122
+    },
+    {
+      "date": "2026-07-14",
+      "category": "Mobile",
+      "value": 106
+    },
+    {
+      "date": "2026-07-14",
+      "category": "Store",
+      "value": 68
+    },
+    {
+      "date": "2026-07-15",
+      "category": "Web",
+      "value": 158
+    },
+    {
+      "date": "2026-07-15",
+      "category": "Mobile",
+      "value": 90
+    },
+    {
+      "date": "2026-07-15",
+      "category": "Store",
+      "value": 79
+    },
+    {
+      "date": "2026-07-16",
+      "category": "Web",
+      "value": 158
+    },
+    {
+      "date": "2026-07-16",
+      "category": "Mobile",
+      "value": 109
+    },
+    {
+      "date": "2026-07-16",
+      "category": "Store",
+      "value": 73
+    },
+    {
+      "date": "2026-07-17",
+      "category": "Web",
+      "value": 142
+    },
+    {
+      "date": "2026-07-17",
+      "category": "Mobile",
+      "value": 104
+    },
+    {
+      "date": "2026-07-17",
+      "category": "Store",
+      "value": 71
+    },
+    {
+      "date": "2026-07-18",
+      "category": "Web",
+      "value": 91
+    },
+    {
+      "date": "2026-07-18",
+      "category": "Mobile",
+      "value": 68
+    },
+    {
+      "date": "2026-07-18",
+      "category": "Store",
+      "value": 43
+    },
+    {
+      "date": "2026-07-19",
+      "category": "Web",
+      "value": 94
+    },
+    {
+      "date": "2026-07-19",
+      "category": "Mobile",
+      "value": 85
+    },
+    {
+      "date": "2026-07-19",
+      "category": "Store",
+      "value": 52
+    },
+    {
+      "date": "2026-07-20",
+      "category": "Web",
+      "value": 130
+    },
+    {
+      "date": "2026-07-20",
+      "category": "Mobile",
+      "value": 113
+    },
+    {
+      "date": "2026-07-20",
+      "category": "Store",
+      "value": 66
+    },
+    {
+      "date": "2026-07-21",
+      "category": "Web",
+      "value": 151
+    },
+    {
+      "date": "2026-07-21",
+      "category": "Mobile",
+      "value": 119
+    },
+    {
+      "date": "2026-07-21",
+      "category": "Store",
+      "value": 66
+    },
+    {
+      "date": "2026-07-22",
+      "category": "Web",
+      "value": 124
+    },
+    {
+      "date": "2026-07-22",
+      "category": "Mobile",
+      "value": 109
+    },
+    {
+      "date": "2026-07-22",
+      "category": "Store",
+      "value": 77
+    },
+    {
+      "date": "2026-07-23",
+      "category": "Web",
+      "value": 149
+    },
+    {
+      "date": "2026-07-23",
+      "category": "Mobile",
+      "value": 99
+    },
+    {
+      "date": "2026-07-23",
+      "category": "Store",
+      "value": 77
+    },
+    {
+      "date": "2026-07-24",
+      "category": "Web",
+      "value": 163
+    },
+    {
+      "date": "2026-07-24",
+      "category": "Mobile",
+      "value": 97
+    },
+    {
+      "date": "2026-07-24",
+      "category": "Store",
+      "value": 62
+    },
+    {
+      "date": "2026-07-25",
+      "category": "Web",
+      "value": 93
+    },
+    {
+      "date": "2026-07-25",
+      "category": "Mobile",
+      "value": 68
+    },
+    {
+      "date": "2026-07-25",
+      "category": "Store",
+      "value": 50
+    },
+    {
+      "date": "2026-07-26",
+      "category": "Web",
+      "value": 93
+    },
+    {
+      "date": "2026-07-26",
+      "category": "Mobile",
+      "value": 82
+    },
+    {
+      "date": "2026-07-26",
+      "category": "Store",
+      "value": 47
+    },
+    {
+      "date": "2026-07-27",
+      "category": "Web",
+      "value": 126
+    },
+    {
+      "date": "2026-07-27",
+      "category": "Mobile",
+      "value": 99
+    },
+    {
+      "date": "2026-07-27",
+      "category": "Store",
+      "value": 69
+    },
+    {
+      "date": "2026-07-28",
+      "category": "Web",
+      "value": 126
+    },
+    {
+      "date": "2026-07-28",
+      "category": "Mobile",
+      "value": 120
+    },
+    {
+      "date": "2026-07-28",
+      "category": "Store",
+      "value": 62
+    },
+    {
+      "date": "2026-07-29",
+      "category": "Web",
+      "value": 163
+    },
+    {
+      "date": "2026-07-29",
+      "category": "Mobile",
+      "value": 96
+    },
+    {
+      "date": "2026-07-29",
+      "category": "Store",
+      "value": 77
+    },
+    {
+      "date": "2026-07-30",
+      "category": "Web",
+      "value": 133
+    },
+    {
+      "date": "2026-07-30",
+      "category": "Mobile",
+      "value": 119
+    },
+    {
+      "date": "2026-07-30",
+      "category": "Store",
+      "value": 69
+    },
+    {
+      "date": "2026-07-31",
+      "category": "Web",
+      "value": 142
+    },
+    {
+      "date": "2026-07-31",
+      "category": "Mobile",
+      "value": 112
+    },
+    {
+      "date": "2026-07-31",
+      "category": "Store",
+      "value": 72
+    },
+    {
+      "date": "2026-08-01",
+      "category": "Web",
+      "value": 109
+    },
+    {
+      "date": "2026-08-01",
+      "category": "Mobile",
+      "value": 83
+    },
+    {
+      "date": "2026-08-01",
+      "category": "Store",
+      "value": 54
+    },
+    {
+      "date": "2026-08-02",
+      "category": "Web",
+      "value": 101
+    },
+    {
+      "date": "2026-08-02",
+      "category": "Mobile",
+      "value": 73
+    },
+    {
+      "date": "2026-08-02",
+      "category": "Store",
+      "value": 53
+    },
+    {
+      "date": "2026-08-03",
+      "category": "Web",
+      "value": 161
+    },
+    {
+      "date": "2026-08-03",
+      "category": "Mobile",
+      "value": 125
+    },
+    {
+      "date": "2026-08-03",
+      "category": "Store",
+      "value": 72
+    },
+    {
+      "date": "2026-08-04",
+      "category": "Web",
+      "value": 129
+    },
+    {
+      "date": "2026-08-04",
+      "category": "Mobile",
+      "value": 97
+    },
+    {
+      "date": "2026-08-04",
+      "category": "Store",
+      "value": 83
+    },
+    {
+      "date": "2026-08-05",
+      "category": "Web",
+      "value": 152
+    },
+    {
+      "date": "2026-08-05",
+      "category": "Mobile",
+      "value": 114
+    },
+    {
+      "date": "2026-08-05",
+      "category": "Store",
+      "value": 84
+    },
+    {
+      "date": "2026-08-06",
+      "category": "Web",
+      "value": 164
+    },
+    {
+      "date": "2026-08-06",
+      "category": "Mobile",
+      "value": 124
+    },
+    {
+      "date": "2026-08-06",
+      "category": "Store",
+      "value": 83
+    },
+    {
+      "date": "2026-08-07",
+      "category": "Web",
+      "value": 130
+    },
+    {
+      "date": "2026-08-07",
+      "category": "Mobile",
+      "value": 109
+    },
+    {
+      "date": "2026-08-07",
+      "category": "Store",
+      "value": 73
+    },
+    {
+      "date": "2026-08-08",
+      "category": "Web",
+      "value": 91
+    },
+    {
+      "date": "2026-08-08",
+      "category": "Mobile",
+      "value": 79
+    },
+    {
+      "date": "2026-08-08",
+      "category": "Store",
+      "value": 56
+    },
+    {
+      "date": "2026-08-09",
+      "category": "Web",
+      "value": 110
+    },
+    {
+      "date": "2026-08-09",
+      "category": "Mobile",
+      "value": 88
+    },
+    {
+      "date": "2026-08-09",
+      "category": "Store",
+      "value": 56
+    },
+    {
+      "date": "2026-08-10",
+      "category": "Web",
+      "value": 159
+    },
+    {
+      "date": "2026-08-10",
+      "category": "Mobile",
+      "value": 98
+    },
+    {
+      "date": "2026-08-10",
+      "category": "Store",
+      "value": 83
+    },
+    {
+      "date": "2026-08-11",
+      "category": "Web",
+      "value": 155
+    },
+    {
+      "date": "2026-08-11",
+      "category": "Mobile",
+      "value": 108
+    },
+    {
+      "date": "2026-08-11",
+      "category": "Store",
+      "value": 68
+    },
+    {
+      "date": "2026-08-12",
+      "category": "Web",
+      "value": 137
+    },
+    {
+      "date": "2026-08-12",
+      "category": "Mobile",
+      "value": 98
+    },
+    {
+      "date": "2026-08-12",
+      "category": "Store",
+      "value": 69
+    },
+    {
+      "date": "2026-08-13",
+      "category": "Web",
+      "value": 163
+    },
+    {
+      "date": "2026-08-13",
+      "category": "Mobile",
+      "value": 100
+    },
+    {
+      "date": "2026-08-13",
+      "category": "Store",
+      "value": 69
+    },
+    {
+      "date": "2026-08-14",
+      "category": "Web",
+      "value": 162
+    },
+    {
+      "date": "2026-08-14",
+      "category": "Mobile",
+      "value": 102
+    },
+    {
+      "date": "2026-08-14",
+      "category": "Store",
+      "value": 69
+    },
+    {
+      "date": "2026-08-15",
+      "category": "Web",
+      "value": 92
+    },
+    {
+      "date": "2026-08-15",
+      "category": "Mobile",
+      "value": 72
+    },
+    {
+      "date": "2026-08-15",
+      "category": "Store",
+      "value": 59
+    },
+    {
+      "date": "2026-08-16",
+      "category": "Web",
+      "value": 116
+    },
+    {
+      "date": "2026-08-16",
+      "category": "Mobile",
+      "value": 77
+    },
+    {
+      "date": "2026-08-16",
+      "category": "Store",
+      "value": 52
+    },
+    {
+      "date": "2026-08-17",
+      "category": "Web",
+      "value": 164
+    },
+    {
+      "date": "2026-08-17",
+      "category": "Mobile",
+      "value": 112
+    },
+    {
+      "date": "2026-08-17",
+      "category": "Store",
+      "value": 80
+    },
+    {
+      "date": "2026-08-18",
+      "category": "Web",
+      "value": 171
+    },
+    {
+      "date": "2026-08-18",
+      "category": "Mobile",
+      "value": 122
+    },
+    {
+      "date": "2026-08-18",
+      "category": "Store",
+      "value": 76
+    },
+    {
+      "date": "2026-08-19",
+      "category": "Web",
+      "value": 133
+    },
+    {
+      "date": "2026-08-19",
+      "category": "Mobile",
+      "value": 101
+    },
+    {
+      "date": "2026-08-19",
+      "category": "Store",
+      "value": 67
+    },
+    {
+      "date": "2026-08-20",
+      "category": "Web",
+      "value": 150
+    },
+    {
+      "date": "2026-08-20",
+      "category": "Mobile",
+      "value": 118
+    },
+    {
+      "date": "2026-08-20",
+      "category": "Store",
+      "value": 71
+    },
+    {
+      "date": "2026-08-21",
+      "category": "Web",
+      "value": 168
+    },
+    {
+      "date": "2026-08-21",
+      "category": "Mobile",
+      "value": 124
+    },
+    {
+      "date": "2026-08-21",
+      "category": "Store",
+      "value": 76
+    },
+    {
+      "date": "2026-08-22",
+      "category": "Web",
+      "value": 97
+    },
+    {
+      "date": "2026-08-22",
+      "category": "Mobile",
+      "value": 77
+    },
+    {
+      "date": "2026-08-22",
+      "category": "Store",
+      "value": 54
+    },
+    {
+      "date": "2026-08-23",
+      "category": "Web",
+      "value": 118
+    },
+    {
+      "date": "2026-08-23",
+      "category": "Mobile",
+      "value": 74
+    },
+    {
+      "date": "2026-08-23",
+      "category": "Store",
+      "value": 58
+    },
+    {
+      "date": "2026-08-24",
+      "category": "Web",
+      "value": 175
+    },
+    {
+      "date": "2026-08-24",
+      "category": "Mobile",
+      "value": 117
+    },
+    {
+      "date": "2026-08-24",
+      "category": "Store",
+      "value": 88
+    },
+    {
+      "date": "2026-08-25",
+      "category": "Web",
+      "value": 141
+    },
+    {
+      "date": "2026-08-25",
+      "category": "Mobile",
+      "value": 126
+    },
+    {
+      "date": "2026-08-25",
+      "category": "Store",
+      "value": 70
+    },
+    {
+      "date": "2026-08-26",
+      "category": "Web",
+      "value": 182
+    },
+    {
+      "date": "2026-08-26",
+      "category": "Mobile",
+      "value": 120
+    },
+    {
+      "date": "2026-08-26",
+      "category": "Store",
+      "value": 85
+    },
+    {
+      "date": "2026-08-27",
+      "category": "Web",
+      "value": 150
+    },
+    {
+      "date": "2026-08-27",
+      "category": "Mobile",
+      "value": 123
+    },
+    {
+      "date": "2026-08-27",
+      "category": "Store",
+      "value": 85
+    },
+    {
+      "date": "2026-08-28",
+      "category": "Web",
+      "value": 182
+    },
+    {
+      "date": "2026-08-28",
+      "category": "Mobile",
+      "value": 105
+    },
+    {
+      "date": "2026-08-28",
+      "category": "Store",
+      "value": 70
+    },
+    {
+      "date": "2026-08-29",
+      "category": "Web",
+      "value": 114
+    },
+    {
+      "date": "2026-08-29",
+      "category": "Mobile",
+      "value": 79
+    },
+    {
+      "date": "2026-08-29",
+      "category": "Store",
+      "value": 54
+    },
+    {
+      "date": "2026-08-30",
+      "category": "Web",
+      "value": 102
+    },
+    {
+      "date": "2026-08-30",
+      "category": "Mobile",
+      "value": 88
+    },
+    {
+      "date": "2026-08-30",
+      "category": "Store",
+      "value": 51
+    },
+    {
+      "date": "2026-08-31",
+      "category": "Web",
+      "value": 150
+    },
+    {
+      "date": "2026-08-31",
+      "category": "Mobile",
+      "value": 124
+    },
+    {
+      "date": "2026-08-31",
+      "category": "Store",
+      "value": 79
+    }
+  ]
+}

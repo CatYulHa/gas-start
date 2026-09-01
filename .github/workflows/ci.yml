@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  node:
+    name: typecheck + build (Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Assert build output
+        run: |
+          test -f packages/gas/dist/Code.js
+          test -f packages/gas/dist/index.html
+          test -f packages/gas/dist/appsscript.json
+          ! grep -E '<(script|link)[^>]*(src|href)="(http|/)' packages/gas/dist/index.html
+          ! grep -E '^(export|import) ' packages/gas/dist/Code.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gas-dist
+          path: packages/gas/dist
+
+  python:
+    name: pytest (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: pytest -q
