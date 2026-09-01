@@ -28,7 +28,7 @@ jobs:
           test -f packages/gas/dist/appsscript.json
           ! grep -E '<(script|link)[^>]*(src|href)="(http|/)' packages/gas/dist/index.html
           ! grep -E '^(export|import) ' packages/gas/dist/Code.js
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: gas-dist
           path: packages/gas/dist
