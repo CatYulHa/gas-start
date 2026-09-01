@@ -30,13 +30,20 @@ def _client():
         raise typer.Exit(2) from None
 
 
-@app.callback()
-def _main(
-    version: Annotated[bool, typer.Option("--version", help="Show version and exit")] = False,
-) -> None:
-    if version:
+def _version_callback(value: bool) -> None:
+    if value:
         typer.echo(f"gasstart-sheets {__version__}")
         raise typer.Exit()
+
+
+@app.callback()
+def _main(
+    version: Annotated[
+        bool,
+        typer.Option("--version", help="Show version and exit", callback=_version_callback, is_eager=True),
+    ] = False,
+) -> None:
+    """Read/write Google Sheets as pandas DataFrames using a cached OAuth token."""
 
 
 @app.command()
