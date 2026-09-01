@@ -112,22 +112,29 @@ npx clasp logout                        # ~/.clasprc.json 삭제
 - **완화**: 이 스타터는 `appsscript.json` 에 `oauthScopes: ["…/spreadsheets.currentonly"]` 로 **바운드된 시트 하나만** 접근하는 최소 권한을 명시합니다. 승인 문구가 "이 스크립트가 설치된 스프레드시트 보기·관리" 로 좁아집니다. (`--type standalone` 으로 만들어 `SPREADSHEET_ID` 로 다른 시트를 여는 경우엔 `https://www.googleapis.com/auth/spreadsheets` 로 바꿔야 합니다.)
 - **경고를 완전히 없애려면**: (a) Google Workspace 조직 계정에서 OAuth 동의 화면을 **내부(Internal)** 로 두면 조직원에게는 경고가 없습니다. (b) 개인(gmail) 계정은 표준 GCP 프로젝트를 연결하고 OAuth 동의 화면을 설정한 뒤 Google 의 **앱 인증(브랜드 + 민감 스코프 심사)** 을 통과해야 하며, 홈페이지·개인정보처리방침 URL 이 필요합니다. 개인 대시보드용이라면 굳이 필요 없습니다.
 
-## 7. 웹앱 공유 범위 (`webapp.access`)
+## 7. 웹앱 공개 범위 — 배포자만 / 회사 도메인 / 시트를 공유한 사람
 
-기본값은 **`MYSELF`** — 배포한 본인만 열 수 있습니다. 오픈소스 템플릿의 안전한 기본값이며, 데모 확인에는 충분합니다.
-다른 사람에게 URL 을 주려면 `packages/gas/appsscript.json` 을 바꾸고 다시 게시합니다:
+기본값은 **배포자만**(`executeAs: USER_DEPLOYING`, `access: MYSELF`) — 오픈소스 템플릿의 안전한 기본값이며, 데모 확인에는 충분합니다.
+다른 사람에게 URL 을 주려면 `packages/gas/appsscript.json` 의 `webapp` 블록을 아래 중 하나로 바꾸고 다시 게시합니다.
 
-| 값 | 누가 열 수 있나 | 용도 |
-|---|---|---|
-| `MYSELF` | 배포자 본인 | 개인 대시보드, 개발 중 (기본) |
-| `DOMAIN` | 같은 Google Workspace 조직의 로그인 사용자 | 사내 대시보드 |
-| `ANYONE` | Google 에 로그인한 모든 사용자 | 공개 데모 |
-| `ANYONE_ANONYMOUS` | 로그인 없이 누구나 | 완전 공개. `getActiveUser()` 가 항상 빈 값이라 소유자 가드가 동작하지 않음 → 쓰기 함수 제거 필요 |
+| 단계 | 누가 열 수 있나 | `executeAs` | `access` | 시트 공유 | 승인 화면 |
+|---|---|---|---|---|---|
+| 1. 배포자만 (기본) | 배포한 본인 | `USER_DEPLOYING` | `MYSELF` | 불필요 | 본인 1회 |
+| 2. 회사 도메인 전체 | 같은 Google Workspace 조직의 로그인 사용자 | `USER_DEPLOYING` | `DOMAIN` | 불필요 | 없음 |
+| 3. 시트를 공유한 사람만 | 시트에 뷰어 이상으로 공유된 Google 계정 | `USER_ACCESSING` | `ANYONE` (조직 안으로만 좁히려면 `DOMAIN`) | 필요 | 방문자마다 1회 |
+| (참고) 공개 데모 | Google 에 로그인한 모든 사용자 | `USER_DEPLOYING` | `ANYONE` | 불필요 | 없음 |
+| (참고) 완전 공개 | 로그인 없이 누구나 | `USER_DEPLOYING` | `ANYONE_ANONYMOUS` | 불필요 | 없음. `getActiveUser()` 가 항상 빈 값이라 쓰기 가드가 모두를 거부 → 쓰기 함수 제거 |
 
 ```bash
-# appsscript.json 의 "access" 수정 후
+# appsscript.json 의 "webapp" 수정 후
 npm run ship:dev        # = push:dev + deploy:dev
 ```
 
-`executeAs: USER_DEPLOYING` 이므로 어떤 값이든 **방문자는 승인 화면을 보지 않고**, 스크립트는 배포자 권한으로 시트를 읽습니다.
-그래서 시트에 **쓰는** 함수는 반드시 `assertDeployer()`(`main.ts`) 같은 가드를 두세요 — 없으면 URL 을 아는 누구나 배포자 권한으로 데이터를 바꿀 수 있습니다.
+**2단계(회사 도메인)** — 스크립트가 배포자 권한으로 실행되므로 시트를 공유하지 않아도 되고, 방문자는 승인 화면을 보지 않습니다. `DOMAIN` 은 회사 Workspace 계정으로 배포했을 때만 고를 수 있습니다(개인 gmail 에는 조직이 없음).
+
+**3단계(시트를 공유한 사람)** — 스크립트가 **방문자 본인 권한**으로 실행됩니다. 시트를 공유받지 않은 사람은 웹앱 껍데기는 열리지만 `getDashboardData()` 가 권한 오류로 끝나 데이터를 보지 못합니다. 즉 "시트 공유 목록 = 대시보드 열람자 목록" 입니다.
+- 보여 줄 사람에게 시트를 **뷰어**로 공유하세요(편집자면 대시보드와 무관하게 시트를 직접 고칠 수 있음).
+- 방문자마다 첫 방문에 승인 화면이 나옵니다. 개인 gmail 방문자에게는 §6 의 "확인되지 않은 앱" 경고도 함께 뜹니다 — `고급 → 이동 → 허용` 안내를 같이 전달하세요. Workspace 조직 내부 앱은 보통 경고가 없습니다.
+- 개인 gmail 로 배포해서 `DOMAIN` 을 못 쓰는 경우, 외부 파트너 몇 명에게만 열고 싶은 경우에 맞습니다.
+
+어느 단계든 시트에 **쓰는** 함수는 `assertDeployer()`(`main.ts`) 가 배포한 계정(시트 소유자)만 통과시킵니다. 새 쓰기 함수를 만들면 같은 가드를 붙이세요 — 없으면 2단계에서는 URL 을 아는 누구나 배포자 권한으로, 3단계에서는 시트 편집자가 웹앱을 통해 데이터를 바꿀 수 있습니다.

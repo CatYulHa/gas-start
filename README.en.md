@@ -40,7 +40,7 @@ Or click **Use this template** on GitHub to start your own repository first. Dis
 `npm run setup` logs you into Google (browser, token cached in `~/.clasprc.json`), checks that the
 [Apps Script API toggle](https://script.google.com/home/usersettings) is on for the account (opens the page and waits if not), creates a
 **new Spreadsheet with a bound Apps Script project**, builds, pushes, deploys the web app and
-opens it. You land on a "👋 Hello, GasStart!" page (private to you by default — `webapp.access: MYSELF`, see [docs/deploy.md §7](./docs/deploy.md) to share); accept the one-time authorization prompt,
+opens it. You land on a "👋 Hello, GasStart!" page (private to you by default — see [Who can see it](#who-can-see-it) to share); accept the one-time authorization prompt,
 click **Load sample data**, and the KPI tiles, chart and table appear. From there, edit
 `packages/dashboard/src/App.tsx` and `packages/gas/src/main.ts`.
 
@@ -58,6 +58,20 @@ Day to day: `npm run dev` (mock data, `?empty` previews the welcome screen), `np
 | Manifest | `packages/gas/appsscript.json` | copied | `appsscript.json` |
 
 Only the three built files are uploaded; sources stay in this repo. Never edit in the online editor — the next `push` overwrites it.
+
+## Who can see it
+
+Access is two lines in `packages/gas/appsscript.json` (`webapp`). Change them, then `npm run ship:dev` / `ship:prod`.
+
+| Tier | Who | `webapp` | Share the sheet? | Consent prompt |
+|---|---|---|---|---|
+| 1. Deployer only (default) | you | `"executeAs": "USER_DEPLOYING", "access": "MYSELF"` | no | you, once |
+| 2. Whole company domain | everyone in your Google Workspace domain | `"executeAs": "USER_DEPLOYING", "access": "DOMAIN"` | no — the script reads the sheet as you | none |
+| 3. People the sheet is shared with | anyone you gave at least *Viewer* on the sheet | `"executeAs": "USER_ACCESSING", "access": "ANYONE"` | yes, as Viewer | each visitor, once |
+
+Tier 2 is the usual company dashboard: visitors just open the link. It needs a Workspace account (personal Gmail has no domain).
+Tier 3 makes the sheet's share list the dashboard's audience — the script runs as the visitor, so people without access to the sheet get a permission error instead of data. Use it for a handful of people, external partners, or when you deploy from a personal Gmail. Use `access: DOMAIN` instead of `ANYONE` to keep it inside the organization.
+Functions that write to the sheet (`seedSampleData`) are guarded by `assertDeployer()` and only work for the deployer / sheet owner in every tier. Details: [docs/deploy.md §7](./docs/deploy.md) (Korean).
 
 ## Environments
 
@@ -97,7 +111,7 @@ Open the repo in Codex, Cursor, Windsurf, Devin, Copilot, Claude Code, … — t
 ## More docs
 
 - [docs/deploy.md](./docs/deploy.md) — what `setup` creates where, `/dev` vs `/exec`, dev→prod, cleanup, the "unverified app" warning
-- [docs/apps-script-guide.md](./docs/apps-script-guide.md) — Apps Script as a serverless platform for company dashboards: `executeAs × access`, restricting to your Workspace domain (`DOMAIN`), per-user data, admin policies, quotas (Korean)
+- [docs/apps-script-guide.md](./docs/apps-script-guide.md) — Apps Script as a serverless platform for company dashboards: `executeAs × access`, restricting to your Workspace domain (`DOMAIN`) or to the people the sheet is shared with (`USER_ACCESSING`), per-user data, admin policies, quotas (Korean)
 - [python/README.md](./python/README.md) — Python ETL package
 
 ## Troubleshooting

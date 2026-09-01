@@ -1,6 +1,6 @@
 # Apps Script 를 서버리스 플랫폼으로 쓰기 — 회사 대시보드 가이드
 
-"서버 없이, 인프라팀 없이, 비용 없이 사내 대시보드/웹앱을 띄우고 **같은 회사 사람만** 보게 하고 싶다."
+"엑셀로 만든 대시보드는 유지보수와 커스텀이 힘들어서 코드로 만든 대시보드를 링크로 공유하고 싶은데, 외부 호스팅에 회사 데이터를 올리기는 걱정된다. 보는 사람은 **같은 회사 사람** 또는 **시트를 공유한 사람**으로 제한하고 싶다."
 GasStart 가 겨냥하는 바로 그 경우를 위해 Google Apps Script(GAS)의 동작 원리와 설정을 정리했습니다.
 
 ## 1. Apps Script 는 무엇인가
@@ -43,13 +43,18 @@ GasStart 가 겨냥하는 바로 그 경우를 위해 Google Apps Script(GAS)의
 
 | 시나리오 | executeAs | access | 설명 |
 |---|---|---|---|
-| **팀 공용 KPI 대시보드** (모두 같은 데이터) | `USER_DEPLOYING` | `DOMAIN` | 가장 단순. 시트는 배포자(또는 서비스용 공용 계정)만 소유. 방문자는 승인 화면 없이 바로 봄 |
+| **회사 도메인 전체 공용 대시보드** (모두 같은 데이터) | `USER_DEPLOYING` | `DOMAIN` | 가장 단순. 시트는 배포자(또는 서비스용 공용 계정)만 소유. 방문자는 승인 화면 없이 바로 봄 |
+| **시트를 공유한 사람만** (부서 몇 명, 외부 파트너, 개인 gmail 배포) | `USER_ACCESSING` | `ANYONE` (조직 안으로만 좁히려면 `DOMAIN`) | 시트의 공유 목록이 곧 열람자 목록. 시트를 뷰어로 공유한 사람만 데이터를 읽음. 각 사용자가 첫 방문에 승인 (§3) |
 | **사용자마다 다른 데이터** (본인 부서 행만) | `USER_ACCESSING` | `DOMAIN` | 시트를 조직에 공유하거나, 코드에서 `getActiveUser()` 로 행을 필터. 각 사용자가 첫 방문에 승인 |
 | **외부 고객·파트너에게 공개** | `USER_DEPLOYING` | `ANYONE` | 배포자 데이터를 읽기 전용으로 노출. **쓰기 함수는 반드시 가드**(§4) |
 | **완전 공개 페이지**(로그인 없이) | `USER_DEPLOYING` | `ANYONE_ANONYMOUS` | 사용자 식별 불가. 쓰기 함수 제거, 민감 데이터 금지 |
 | 개인용 / 개발 중 | `USER_DEPLOYING` | `MYSELF` | GasStart 기본값 |
 
-## 3. 회사 도메인 담당자만 보게 하기 — 실제 설정
+## 3. 공개 범위 설정 — 회사 도메인 전체, 또는 시트를 공유한 사람만
+
+처음 `npm run setup` 을 하면 **배포자만** 열 수 있는 상태(`MYSELF`)입니다. 여기서 두 방향으로 넓힐 수 있습니다.
+
+### 3-1. 회사 도메인 전체에 열기
 
 ```jsonc
 // packages/gas/appsscript.json
@@ -81,13 +86,30 @@ export function getDashboardData() { assertAllowed(); /* … */ }
 
 - **방문자 이메일 표시/감사 로그**: `Session.getActiveUser().getEmail()` 을 `console.log` 로 남기면 Cloud Logging 에 누가 언제 봤는지 남습니다(§7).
 
-### `USER_ACCESSING` 으로 사용자별 데이터 보여 주기
+### 3-2. 시트를 공유한 사람만 보게 하기
 
-1. `appsscript.json`: `"executeAs": "USER_ACCESSING"`, `"access": "DOMAIN"`
-2. 시트를 조직(또는 대상 그룹)에 **뷰어**로 공유 — 방문자 권한으로 읽으므로 공유가 없으면 오류
-3. 스코프: 각 방문자가 승인하므로 `oauthScopes` 는 계속 최소로. 다른 시트를 열면 `spreadsheets.currentonly` → `spreadsheets`
-4. 코드: `readTable()` 결과를 `Session.getActiveUser().getEmail()` 기준으로 필터. 이 모드에서는 `assertDeployer()` 가 항상 통과(active == effective)하므로 쓰기 가드는 허용 목록 방식으로 바꿉니다.
-5. 첫 방문에 각 사용자가 승인 화면을 봅니다. Workspace 조직 **내부** 앱은 "확인되지 않은 앱" 경고가 붙지 않는 것이 일반적입니다(조직 정책에 따라 다름 — 아래 §5).
+"이 시트를 볼 수 있는 사람이 대시보드도 볼 수 있다"는 규칙을 원할 때 씁니다. 개인 gmail 로 배포해서 `DOMAIN` 을 고를 수 없을 때, 부서 몇 명이나 외부 파트너에게만 열고 싶을 때, 누가 보는지를 Drive 공유 화면에서 관리하고 싶을 때에 맞습니다.
+
+```jsonc
+// packages/gas/appsscript.json
+"webapp": {
+  "executeAs": "USER_ACCESSING",   // 방문자 본인 권한으로 실행
+  "access": "ANYONE"               // 로그인한 누구나 "열 수는" 있지만, 시트 권한이 없으면 데이터를 못 읽음
+}
+```
+
+```bash
+npm run ship:prod
+```
+
+- 보여 줄 사람에게 시트를 **뷰어**로 공유합니다. 공유받지 못한 사람은 웹앱 껍데기는 열리지만 `getDashboardData()` 가 권한 오류로 끝납니다 — 앱 코드가 아니라 Sheets 의 권한 검사가 막는 것이므로 코드에서 따로 확인할 필요가 없습니다.
+- 방문자마다 첫 방문에 승인 화면을 한 번 봅니다. 스코프가 `spreadsheets.currentonly` 로 좁혀져 있어 승인 문구도 "이 스크립트가 설치된 스프레드시트" 로 한정됩니다. 개인 gmail 방문자에게는 "확인되지 않은 앱" 경고가 함께 뜨므로 `고급 → 이동 → 허용` 안내를 같이 전달하세요(§5, docs/deploy.md §6). Workspace 조직 **내부** 앱은 경고가 붙지 않는 것이 일반적입니다.
+- Workspace 조직 안에서만 쓰되 시트 공유로 사람을 고르고 싶다면 `access` 를 `DOMAIN` 으로 두고 `executeAs` 만 `USER_ACCESSING` 으로 바꿉니다.
+- 쓰기 가드: 이 모드에서는 active == effective 라 단순 비교로는 배포자를 가려낼 수 없어서, GasStart 의 `assertDeployer()` 는 **시트 소유자**인지도 함께 확인합니다. 뷰어는 어차피 Sheets 가 쓰기를 거부하고, 편집자도 웹앱을 통해서는 `seedSampleData` 를 못 돌립니다(시트를 직접 고치는 것은 막지 않음). 공유 드라이브의 시트는 소유자가 없어 편집 권한이 유일한 가드입니다.
+
+### 3-3. 사용자마다 다른 데이터 보여 주기
+
+3-2 의 확장입니다. `readTable()` 결과를 `Session.getActiveUser().getEmail()` 기준으로 필터하면 같은 시트에서 본인 부서 행만 보여 줄 수 있습니다. 시트는 대상 그룹에 뷰어로 공유하고, 다른 시트를 열어야 하면 스코프를 `spreadsheets.currentonly` → `spreadsheets` 로 바꿉니다. 각 사용자가 첫 방문에 승인하는 것은 3-2 와 같습니다.
 
 ## 4. 서버 함수는 공개 엔드포인트다
 
@@ -142,10 +164,10 @@ export function getDashboardData() { assertAllowed(); /* … */ }
 ## 8. 체크리스트 — 사내 배포 전
 
 - [ ] 배포 계정은 회사 Workspace 계정(개인 계정 퇴사 시 앱이 사라짐). 가능하면 **공용 서비스 계정 성격의 사용자 계정**으로 배포
-- [ ] `access` 를 `DOMAIN` 으로, 필요하면 코드에서 허용 목록/그룹 확인
+- [ ] 공개 범위 결정: 회사 도메인 전체(`USER_DEPLOYING` + `DOMAIN`) 또는 시트를 공유한 사람만(`USER_ACCESSING` + `ANYONE`/`DOMAIN`). 필요하면 코드에서 허용 목록/그룹 확인
 - [ ] 시트에 쓰는 함수마다 가드 확인, 불필요한 export 제거
 - [ ] `oauthScopes` 최소화(사용하는 서비스만)
-- [ ] 시트 공유 범위 점검 — `USER_DEPLOYING` 이면 시트를 공유하지 않아도 대시보드가 동작하므로, 시트는 편집자만 공유
+- [ ] 시트 공유 범위 점검 — `USER_DEPLOYING` 이면 시트를 공유하지 않아도 대시보드가 동작하므로 시트는 편집자만 공유. `USER_ACCESSING` 이면 보여 줄 사람에게 **뷰어**로 공유(공유 목록 = 열람자 목록)
 - [ ] 개인정보가 있으면 반환값에서 제거하고, 접근 로그(`getActiveUser`) 남기기
 - [ ] prod 는 별도 스크립트/시트(`npm run setup:prod`), `deploymentId` 를 `.clasp.prod.json` 에 유지해 URL 고정
 - [ ] 관리자와 Apps Script API·OAuth 정책 확인(§5)

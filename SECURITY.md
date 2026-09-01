@@ -22,9 +22,9 @@ and the repository ships **no credentials of any kind**:
 
 | Setting | Default | Why | To change |
 |---|---|---|---|
-| `webapp.access` | `MYSELF` | Only the deployer can open the web app. | `DOMAIN` (Workspace) or `ANYONE` in `packages/gas/appsscript.json`, then push + deploy. See `docs/deploy.md` §7. |
-| `webapp.executeAs` | `USER_DEPLOYING` | Visitors never see an OAuth prompt; the script runs with the deployer's access. | Keep. If you switch to `USER_ACCESSING`, every visitor must authorize. |
-| `seedSampleData` | owner-only | Writes to the sheet; with `USER_DEPLOYING` anyone holding the URL would otherwise be able to overwrite it. | Copy `assertDeployer()` for any new function that writes. |
+| `webapp.access` | `MYSELF` | Only the deployer can open the web app. | `DOMAIN` (everyone in your Workspace domain) or `ANYONE` in `packages/gas/appsscript.json`, then push + deploy. See `docs/deploy.md` §7. |
+| `webapp.executeAs` | `USER_DEPLOYING` | Visitors never see an OAuth prompt; the script runs with the deployer's access, so the sheet need not be shared. | Switch to `USER_ACCESSING` (with `access: ANYONE` or `DOMAIN`) to let exactly the people the **sheet is shared with** see the dashboard. Each visitor authorizes once. |
+| `seedSampleData` | owner-only | Writes to the sheet; with `USER_DEPLOYING` anyone holding the URL would otherwise be able to overwrite it, and with `USER_ACCESSING` any sheet editor could. | Copy `assertDeployer()` (checks deployer *and* spreadsheet owner) for any new function that writes. |
 | `oauthScopes` | `spreadsheets.currentonly` | Least privilege: only the bound spreadsheet. | Add scopes explicitly when you use `openById`, `UrlFetchApp`, etc. |
 | `XFrameOptionsMode` | `DEFAULT` | Prevents embedding the app in third-party iframes. | `ALLOWALL` if you embed in Google Sites. |
 

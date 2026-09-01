@@ -42,7 +42,7 @@ export function getDashboardData(): DashboardData {
 
 /**
  * Fills the `data` sheet with 90 days × 3 categories of demo rows (replaces existing content).
- * Write access is limited to the account that deployed the web app: with
+ * Write access is limited to the account that owns the deployment: with
  * `executeAs: USER_DEPLOYING` every visitor runs as the deployer, so without this
  * guard anyone holding the URL could overwrite the sheet.
  */
@@ -72,15 +72,25 @@ export function setup(spreadsheetId: string): string {
 }
 
 /**
- * Throws unless the visitor is the deploying account. For consumer Gmail accounts
- * `getActiveUser()` is empty for anyone other than the owner, so this is a safe
- * "owner only" check for functions that modify data.
+ * Throws unless the visitor is the account that owns this deployment. Works in
+ * every `webapp` mode of appsscript.json:
+ *
+ * - `executeAs: USER_DEPLOYING` (access MYSELF / DOMAIN / ANYONE): the script runs
+ *   as the deployer, so `getEffectiveUser()` is the deployer and `getActiveUser()`
+ *   is the visitor (empty for consumer Gmail visitors). Only the deployer matches.
+ * - `executeAs: USER_ACCESSING` ("people the sheet is shared with"): the script
+ *   runs as the visitor, so active === effective for everyone. We then require the
+ *   visitor to be the spreadsheet owner. Viewers cannot write anyway (Sheets denies
+ *   it), but this also stops editors from wiping the sheet through the web app.
+ *   Spreadsheets on a shared drive have no owner — there the sheet's own edit
+ *   permission is the only guard.
  */
 function assertDeployer(action: string): void {
-  const active = Session.getActiveUser().getEmail();
-  const effective = Session.getEffectiveUser().getEmail();
-  if (!active || active !== effective) {
-    throw new Error(`${action} is restricted to the account that deployed this web app.`);
+  const active = Session.getActiveUser().getEmail().toLowerCase();
+  const effective = Session.getEffectiveUser().getEmail().toLowerCase();
+  const owner = getSpreadsheet().getOwner()?.getEmail().toLowerCase() ?? effective;
+  if (!active || active !== effective || active !== owner) {
+    throw new Error(`${action} is restricted to the account that owns this deployment.`);
   }
 }
 

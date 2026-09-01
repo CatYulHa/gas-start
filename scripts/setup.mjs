@@ -153,9 +153,11 @@ console.log(`
   Then click "Load sample data" in the dashboard to fill the \`data\` sheet with demo rows.
   Details: docs/deploy.md §6
 
-  Sharing: the web app is private to you (webapp.access = MYSELF). To share it, set
-  "access" to "DOMAIN" (Workspace) or "ANYONE" in packages/gas/appsscript.json, then
-  ${shipCmd}.   docs/deploy.md §7
+  Sharing: the web app is private to you (webapp.access = MYSELF). To open it up, edit
+  "webapp" in packages/gas/appsscript.json and run ${shipCmd}:
+    everyone in your Workspace domain  → executeAs USER_DEPLOYING, access DOMAIN
+    only people the sheet is shared with → executeAs USER_ACCESSING, access ANYONE
+  Details: docs/deploy.md §7
 
   Next steps
     npm run dev            edit the React dashboard locally with mock data

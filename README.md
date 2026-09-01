@@ -13,19 +13,21 @@
 
 ## 이런 분에게
 
-- 사내 KPI 대시보드나 간단한 웹앱을 **서버 없이** 배포하고 싶은 분
-- **같은 회사 도메인 사람만** 볼 수 있으면 충분한 분
+- 엑셀이나 시트 안에서 만든 대시보드가 **유지보수와 커스텀에 한계**에 부딪혀, 코드로 만든 대시보드를 **링크 하나로** 공유하고 싶은 분
+- 그렇다고 외부 호스팅에 회사 데이터를 올리기는 꺼려지는 분
+- 보는 사람을 **회사 도메인 전체** 또는 **시트를 공유한 사람만**으로 제한할 수 있으면 충분한 분
 - 스프레드시트를 데이터 소스로 쓰되, 화면은 React로 제대로 만들고 싶은 분
 - Apps Script를 로컬에서 TypeScript로 개발하고 Git으로 관리하고 싶은 분
 
 ## 어떻게 동작하나
 
 ```
-Python ETL ──write──▶  Google Sheets  ◀──read──  Apps Script (TypeScript)  ──▶  React 대시보드
+Python ETL ──write──▶  Google Sheets  ◀──read──  Apps Script (TS → JS 번들)  ──▶  React 대시보드
 (선택)                 `data` 탭                  getDashboardData()             KPI · 차트 · 표
 ```
 
 - **Apps Script**가 백엔드입니다. Google 서버에서 실행되며 시트를 읽어 JSON으로 돌려줍니다.
+- 백엔드 소스는 **TypeScript**로 씁니다. Apps Script는 JavaScript(`.gs`)만 실행하므로, Vite가 TypeScript를 JavaScript 파일 하나(`Code.js`)로 컴파일하고 `clasp`이 올립니다. 편집기에는 `Code.gs`로 보입니다. clasp 3부터 clasp 자체의 TypeScript 변환은 없어졌기 때문에 이 빌드 단계가 스타터에 들어 있습니다.
 - **React 대시보드**는 단일 HTML 파일로 번들되어 Apps Script가 그대로 서빙합니다.
 - **Python**은 선택입니다. 외부 데이터를 가공해 시트에 넣을 때만 씁니다.
 - `clasp`로 dev와 prod를 따로 배포합니다. 모든 명령은 `npm run …` 하나로 통일되어 있습니다.
@@ -107,6 +109,7 @@ npm run check        # typecheck + build. CI와 같은 검사
 자주 묻는 것:
 
 - **온라인 편집기에서 고쳐도 되나요?** 아니요. 다음 `push`가 덮어씁니다. 편집기는 실행 로그, 트리거, 스크립트 속성을 볼 때만 씁니다.
+- **Apps Script에 TypeScript를 그대로 올릴 수 있나요?** 아니요. Apps Script는 JavaScript만 실행합니다. 예전에는 `clasp push`가 TypeScript를 변환해 줬지만 clasp 3부터 빠졌습니다. 그래서 `npm run build`가 TypeScript를 `dist/Code.js`로 컴파일하고, 그 파일이 올라가 편집기에서 `Code.gs`로 보입니다. 타입 검사와 자동완성은 로컬에서만 하고, Google에는 결과 JavaScript만 갑니다.
 - **소스가 Google에 올라가나요?** 아니요. TypeScript와 React 소스는 이 저장소에만 있습니다.
 - **`dist/`를 커밋하나요?** 아니요. `.gitignore`에 있고 `npm run build`로 다시 만듭니다.
 - **데이터는 어디 있나요?** `npm run setup`이 만든 스프레드시트의 `data` 탭입니다. `npm run sheet:dev`로 엽니다.
@@ -182,21 +185,36 @@ write_df(gc, "<SHEET_ID>", "summary", df.groupby("category", as_index=False)["va
 
 OAuth 클라이언트 만들기(1회), 환경변수, 서비스 계정 사용법은 [python/README.md](./python/README.md)에 있습니다.
 
-## 회사에서 쓰기
+## 회사에서 쓰기 — 누가 볼 수 있나
 
-기본 배포는 **배포한 본인만** 열 수 있습니다(`webapp.access: MYSELF`). 같은 회사 사람에게 공개하려면 `packages/gas/appsscript.json`을 한 줄 바꾸고 다시 배포합니다.
+공개 범위는 `packages/gas/appsscript.json`의 `webapp` 블록 두 줄로 정합니다. 바꾼 뒤 `npm run ship:dev`(또는 `ship:prod`)로 다시 게시하면 적용됩니다. 세 가지 중 하나를 고르면 됩니다.
+
+| 단계 | 누가 보나 | `webapp` 설정 | 시트 공유 | 방문자 승인 화면 |
+|---|---|---|---|---|
+| 1. 배포자만 (기본) | 배포한 본인 | `"executeAs": "USER_DEPLOYING", "access": "MYSELF"` | 불필요 | 본인 1회 |
+| 2. 회사 도메인 전체 | 같은 Google Workspace 조직의 모든 계정 | `"executeAs": "USER_DEPLOYING", "access": "DOMAIN"` | 불필요 | 없음 |
+| 3. 시트를 공유한 사람만 | 시트에 뷰어 이상으로 공유된 계정 | `"executeAs": "USER_ACCESSING", "access": "ANYONE"` | 필요 (보여 줄 사람에게 뷰어로) | 각자 1회 |
+
+**1단계**는 처음 `npm run setup`을 했을 때의 상태입니다. URL을 남에게 줘도 열리지 않으니 개발 중에 안전합니다.
+
+**2단계**는 사내 공용 대시보드에 맞습니다. 스크립트가 배포자 권한으로 시트를 읽기 때문에 시트를 따로 공유하지 않아도 되고, 방문자는 승인 화면 없이 링크만 열면 됩니다. 회사 Workspace 계정으로 배포했을 때만 고를 수 있고, 다른 도메인 사용자는 앱 코드가 실행되기 전에 Google이 막습니다.
 
 ```json
 "webapp": { "executeAs": "USER_DEPLOYING", "access": "DOMAIN" }
+```
+
+**3단계**는 "이 시트를 볼 수 있는 사람이 대시보드도 볼 수 있다"는 규칙입니다. 스크립트가 방문자 본인 권한으로 실행되므로, 시트를 공유받지 못한 사람은 링크를 열어도 데이터를 읽지 못합니다. 누가 보는지를 시트의 공유 목록으로 관리하고 싶을 때, 부서 몇 명이나 외부 파트너에게만 열고 싶을 때, 그리고 개인 Gmail 계정이라 `DOMAIN`을 쓸 수 없을 때 이 방식을 씁니다. 방문자마다 첫 방문에 승인 화면이 한 번 나오며, 개인 계정에는 "확인되지 않은 앱" 경고가 함께 뜰 수 있습니다(대응은 [docs/deploy.md §6](./docs/deploy.md)). Workspace 조직 안에서만 쓰려면 `access`를 `DOMAIN`으로 두고 `executeAs`만 바꿔도 됩니다.
+
+```json
+"webapp": { "executeAs": "USER_ACCESSING", "access": "ANYONE" }
 ```
 
 ```bash
 npm run ship:dev
 ```
 
-- `DOMAIN`은 회사 Workspace 계정으로 배포했을 때만 쓸 수 있습니다. 다른 도메인 사용자는 Google이 앱 코드 실행 전에 차단합니다.
-- 방문자는 승인 화면을 보지 않습니다. 스크립트는 배포자 권한으로 실행되기 때문입니다.
-- 특정 부서만, 사용자별 다른 데이터, 관리자 정책, 할당량과 한계는 [docs/apps-script-guide.md](./docs/apps-script-guide.md)에 정리했습니다.
+- 시트에 **쓰는** 함수(`seedSampleData` 등)는 어떤 단계에서도 배포한 계정(시트 소유자)만 실행할 수 있습니다. 3단계에서 뷰어에게는 "Load sample data" 버튼이 권한 오류로 끝나는 것이 정상입니다.
+- 특정 부서만 허용, 사용자별로 다른 데이터, 관리자 정책, 할당량과 한계는 [docs/apps-script-guide.md](./docs/apps-script-guide.md)에 정리했습니다.
 
 ### dev와 prod
 
@@ -213,9 +231,9 @@ npm run ship:prod      # 이후 게시. URL은 고정됩니다
 
 ## 보안
 
-- **공개 범위** — 기본 `MYSELF`. 공유는 의도적으로 `DOMAIN`이나 `ANYONE`으로 바꿉니다.
+- **공개 범위** — 기본은 배포자만(`MYSELF`). 회사 도메인 전체(`DOMAIN`)나 시트를 공유한 사람만(`USER_ACCESSING`)으로 넓히는 것은 위 "회사에서 쓰기"처럼 의도적으로 합니다.
 - **권한 스코프** — `spreadsheets.currentonly`(연결된 시트 하나만) + `userinfo.email`로 최소화. 다른 시트를 `openById`로 열거나 `UrlFetchApp`을 쓰면 스코프를 추가합니다.
-- **쓰기 가드** — 시트를 바꾸는 서버 함수는 `assertDeployer()`로 배포자만 실행하게 되어 있습니다.
+- **쓰기 가드** — 시트를 바꾸는 서버 함수는 `assertDeployer()`로 배포한 계정(시트 소유자)만 실행하게 되어 있습니다. 세 가지 공개 범위 모두에서 동작합니다.
 - **비밀 파일** — `.clasp.*.json`(스크립트 ID), `.secrets/`(OAuth 클라이언트, 토큰)는 `.gitignore`에 있습니다. 저장소에는 어떤 자격증명도 들어 있지 않습니다.
 - **Python 쓰기** — `=`, `+`, `-`, `@`로 시작하는 문자열은 수식이 아닌 텍스트로 저장합니다(수식 주입 방지). 필요하면 `--allow-formulas`.
 
