@@ -6,13 +6,15 @@ Thanks for helping improve GasStart!
 
 ```bash
 npm install                      # all JS workspaces
-npm run typecheck && npm run build
+npm run check
 npm run dev                      # dashboard on http://localhost:5173 with mock data
 
 cd python
-python -m venv .venv && . .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate        # Windows PowerShell: .venv\Scripts\activate
 pip install -e ".[dev]"
-pytest && ruff check .
+pytest
+ruff check .
 ```
 
 ## Ground rules

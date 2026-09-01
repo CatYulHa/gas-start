@@ -26,17 +26,22 @@ gasstart-sheets seed          `data` 탭                   getDashboardData()   
 
 ## 요구 사항
 
-- Node.js ≥ 20 (`.nvmrc` = 24), npm ≥ 9
-- Python ≥ 3.11 (Python 파트를 쓸 때만)
-- Google 계정 + [Apps Script API 활성화](https://script.google.com/home/usersettings) (`clasp login` 전에 켜 두세요)
+- **Windows · macOS · Linux** 모두 동일하게 동작합니다 (스크립트는 전부 Node 로 작성, OS 별 분기 내장). 명령은 아래 그대로 입력하면 됩니다.
+  - Windows PowerShell 에서 `npm.ps1 파일을 로드할 수 없습니다` 가 나오면 한 번만 `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+- Node.js ≥ 20 (`.nvmrc` = 24), npm ≥ 9 — `git` 도 필요
+- Google 계정 (개인 Gmail 또는 회사 Workspace). Apps Script API 는 `npm run setup` 이 확인하고 꺼져 있으면 설정 페이지를 열어 줍니다
+- Python ≥ 3.11 — **선택**, Python 으로 시트에 데이터를 넣을 때만
 
 ## 시작하기 — 명령 하나
 
 ```bash
-git clone https://github.com/CatYulHa/gas-start.git GasStart && cd GasStart
+git clone https://github.com/CatYulHa/gas-start.git
+cd gas-start
 npm install
 npm run setup
 ```
+
+(또는 GitHub 의 **Use this template** 으로 자기 저장소를 만든 뒤 클론. 배포는 pip 이 아니라 **git + npm** 입니다.)
 
 `npm run setup` 이 순서대로 처리합니다.
 
@@ -62,10 +67,31 @@ npm run setup
 ```bash
 npm run dev          # http://localhost:5173 — 배포 없이 mock 데이터로 UI 개발 (?empty 로 환영 화면 미리보기)
 npm run push:dev     # 빌드 + 업로드 (에디터의 "테스트 배포" URL 에 즉시 반영)
-npm run deploy:dev   # 새 버전을 같은 웹앱 URL 로 게시
+npm run deploy:dev   # 새 버전을 같은 웹앱 URL(/exec) 로 게시
+npm run ship:dev     # push + deploy 한 번에
 npm run sheet:dev    # 바운드 스프레드시트 열기 · open:dev 는 편집기 · web:dev 는 웹앱
-npm run setup:prod   # prod 환경도 같은 절차로 한 번에 (별도 시트 + 스크립트)
+npm run setup:prod   # prod 환경도 같은 절차로 한 번에 (별도 시트 + 스크립트) → 이후 ship:prod
 ```
+
+## 코드는 어디에 있나 — 소스 · 빌드 · Google
+
+```
+로컬 소스 (여기서 편집)                 npm run build              Apps Script 프로젝트 (clasp push 로 업로드)
+─────────────────────────────          ──────────────▶           ────────────────────────────────────────
+packages/dashboard/src/*.tsx  React ──▶ packages/gas/dist/index.html ──▶  index.html   (HtmlService 가 브라우저로 서빙)
+packages/gas/src/*.ts   TS 백엔드 ──▶ packages/gas/dist/Code.js    ──▶  Code.gs      (Google 서버에서 실행되는 백엔드)
+packages/gas/appsscript.json     ──▶ packages/gas/dist/appsscript.json ─▶ appsscript.json (매니페스트: 스코프·웹앱 설정)
+packages/shared/src/index.ts     ──▶ (양쪽 번들에 포함)                   ─
+```
+
+| 질문 | 답 |
+|---|---|
+| **백엔드(.gs)는 어디?** | 소스는 `packages/gas/src/main.ts`(TypeScript). 빌드하면 `dist/Code.js` 하나로 합쳐지고, push 하면 Apps Script 편집기에 **`Code.gs`** 로 보입니다. Google 서버에서 실행됩니다 |
+| **React 는 어디?** | 소스는 `packages/dashboard/src/`. 빌드하면 JS·CSS 가 모두 인라인된 **`dist/index.html` 한 파일**이 되고, push 하면 편집기에 `index.html` 로 보입니다. `doGet()` 이 이 파일을 브라우저에 내려 주고, 브라우저 안에서 React 가 `google.script.run` 으로 `Code.gs` 함수를 호출합니다 |
+| **데이터는 어디?** | `npm run setup` 이 만든 스프레드시트(`npm run sheet:dev`). `data` 탭이 대시보드의 데이터 소스 |
+| **편집기(`npm run open:dev`)에서 고쳐도 되나?** | 안 됩니다 — 다음 `push` 가 덮어씁니다. 항상 로컬에서 고치고 `npm run push:dev`. 편집기는 실행 로그·트리거·스크립트 속성 확인용 |
+| **Google 에 소스가 올라가나?** | 아니요. 번들 결과(`dist/` 3개 파일)만 올라갑니다. TypeScript·React 소스는 이 저장소에만 있습니다 |
+| **`dist/` 는 커밋하나?** | 아니요(gitignore). 각자 `npm run build` 로 재생성 |
 
 ## dev / prod 분리 원리
 
@@ -85,6 +111,7 @@ packages/gas/
 | `npm run setup` / `setup:prod` | 로그인 → 생성 → 빌드 → push → 배포 → 열기 를 한 번에 (`scripts/setup.mjs`) |
 | `npm run create:<env>` | `clasp create-script --type sheets`(기본, 새 시트 + 바운드 스크립트) 후 scriptId 를 `.clasp.<env>.json` 에 저장. `-- --type standalone` 가능 |
 | `npm run push:<env>` | `npm run build` → `clasp push -f` |
+| `npm run ship:<env>` | `push:<env>` + `deploy:<env>` |
 | `npm run deploy:<env>` | `deploymentId` 가 비어 있으면 `create-deployment` 후 id 를 자동 저장, 있으면 `update-deployment` (URL 유지) |
 | `npm run web:<env>` | `clasp open-web-app` |
 | `npm run open:<env>` / `sheet:<env>` | 에디터 / 바운드 스프레드시트 열기 |
@@ -147,8 +174,10 @@ GasStart/
 
 ```bash
 cd python
-python -m venv .venv && .venv\Scripts\activate      # macOS/Linux: source .venv/bin/activate
-pip install -e ".[dev]"                             # 또는: uv pip install -e ".[dev]"
+python -m venv .venv
+.venv\Scripts\activate          # Windows PowerShell
+source .venv/bin/activate      # macOS / Linux
+pip install -e ".[dev]"       # 또는: uv pip install -e ".[dev]"
 
 gasstart-sheets auth        # 브라우저 동의 → .secrets/token.json 생성
 gasstart-sheets auth        # 두 번째부터는 브라우저 없이 즉시 통과

@@ -27,7 +27,7 @@ GasStart 는 특정 AI 에 묶여 있지 않습니다. 저장소 루트의 **`AG
 요청(프롬프트) → AI 가 packages/* 수정 → npm run dev 로 확인 → npm run push:dev → /dev URL 확인 → deploy:dev
 ```
 
-AI 에게 마지막에 항상 **`npm run typecheck && npm run build`** 를 돌려 달라고 하세요. 두 명령이 통과하면 push 는 거의 항상 성공합니다.
+AI 에게 마지막에 항상 **`npm run check`** 를 돌려 달라고 하세요. 두 명령이 통과하면 push 는 거의 항상 성공합니다.
 
 ## 2. 프롬프트 레시피
 
@@ -38,7 +38,7 @@ AI 에게 마지막에 항상 **`npm run typecheck && npm run build`** 를 돌�
 > 시트 `data` 탭의 컬럼이 `order_date, region, product, amount, qty` 로 바뀌었어.
 > `packages/shared/src/index.ts` 의 `DataPoint` 를 이 스키마로 바꾸고, `transform.ts` 의 변환·KPI 를 맞춰 줘.
 > `mock/data.json` 과 `packages/gas/src/sample.ts`, `python/src/gasstart_sheets/sample.py` 의 샘플도 같은 스키마로 다시 생성해.
-> 끝나면 `npm run typecheck && npm run build`.
+> 끝나면 `npm run check`.
 
 ### 차트 추가
 
@@ -93,5 +93,5 @@ npm run typecheck        # 서버·클라이언트·공용 타입 모두
 npm run build            # dist/ 3개 파일, index.html 에 외부 참조 없음
 npm run dev              # mock 으로 UI 확인 (?empty 로 빈 상태도)
 npm run push:dev         # /dev URL 에서 실데이터로 확인
-cd python && pytest      # Python 을 건드렸다면
+cd python; pytest        # Python 을 건드렸다면
 ```

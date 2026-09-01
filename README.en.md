@@ -24,10 +24,16 @@ gasstart-sheets seed         `data` tab                  getDashboardData()  goo
 
 ## Quick start — one command
 
+Works the same on **Windows, macOS and Linux** (Node ≥ 20 and git required; Python only for the optional ETL).
+
 ```bash
+git clone https://github.com/CatYulHa/gas-start.git
+cd gas-start
 npm install
 npm run setup
 ```
+
+Or click **Use this template** on GitHub to start your own repository first. Distribution is git + npm, not pip.
 
 `npm run setup` logs you into Google (browser, token cached in `~/.clasprc.json`), checks that the
 [Apps Script API toggle](https://script.google.com/home/usersettings) is on for the account (opens the page and waits if not), creates a
@@ -39,7 +45,17 @@ click **Load sample data**, and the KPI tiles, chart and table appear. From ther
 Options: `--type standalone` (no sheet; set Script Property `SPREADSHEET_ID`), `--title`, `--env staging`, `--no-open`, `--dry-run`.
 Have an existing script? Put its `scriptId` in `packages/gas/.clasp.dev.json` first and `setup` skips creation.
 
-Day to day: `npm run dev` (mock data, `?empty` previews the welcome screen), `npm run push:dev`, `npm run deploy:dev`, `npm run setup:prod`.
+Day to day: `npm run dev` (mock data, `?empty` previews the welcome screen), `npm run push:dev`, `npm run deploy:dev` (or `npm run ship:dev` for both), `npm run setup:prod`.
+
+## Where the code lives
+
+| | Source (edit here) | Build output | In the Apps Script project |
+|---|---|---|---|
+| Backend | `packages/gas/src/*.ts` (TypeScript) | `packages/gas/dist/Code.js` | `Code.gs` — runs on Google's servers |
+| Dashboard | `packages/dashboard/src/*.tsx` (React) | `packages/gas/dist/index.html` (JS+CSS inlined) | `index.html` — served by `doGet()`, calls `Code.gs` via `google.script.run` |
+| Manifest | `packages/gas/appsscript.json` | copied | `appsscript.json` |
+
+Only the three built files are uploaded; sources stay in this repo. Never edit in the online editor — the next `push` overwrites it.
 
 ## Environments
 
@@ -58,7 +74,8 @@ and copies the clasp-relevant fields into `.clasp.json` right before each comman
 ## Python
 
 ```bash
-cd python && pip install -e ".[dev]"
+cd python
+pip install -e ".[dev]"
 gasstart-sheets auth                        # first run: browser consent -> .secrets/token.json
 gasstart-sheets seed <SHEET_ID>             # sample data into the `data` tab
 gasstart-sheets read <SHEET_ID> data -o out.csv

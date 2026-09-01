@@ -42,17 +42,18 @@ npm run setup:prod            # prod: 같은 절차, 별도 시트 + 스크립�
 npm run dev                   # 로컬 mock 데이터로 React 개발 (http://localhost:5173, ?empty 로 환영 화면)
 npm run push:dev              # 빌드 + 업로드. "테스트 배포" URL(/dev) 에는 즉시 반영
 npm run deploy:dev            # dev 웹앱 URL(/exec) 에 새 버전 게시
+npm run ship:dev              # push + deploy 한 번에
 npm run web:dev               # dev 웹앱 열기
 npm run open:dev              # Apps Script 편집기 (실행 로그, 트리거, 스크립트 속성)
 npm run sheet:dev             # 바운드 스프레드시트 열기
 
 # 운영
-npm run push:prod && npm run deploy:prod    # prod 에 게시 (URL 고정)
+npm run ship:prod                           # push:prod + deploy:prod — prod 에 게시 (URL 고정)
 npm run deployments:prod                    # 배포 목록
 npm run clasp -- prod list-versions         # 그 외 clasp 명령 패스스루
 
 # 점검
-npm run typecheck && npm run build          # CI 와 동일
+npm run check          # CI 와 동일
 npm run status:dev                          # 어떤 파일이 push 되는지
 ```
 
@@ -88,7 +89,7 @@ npm run status:dev                          # 어떤 파일이 push 되는지
 
 | 상황 | 할 일 |
 |---|---|
-| **같은 프로젝트를 이어서 개발** | 원래 PC 의 `packages/gas/.clasp.dev.json` 을 복사해 오고 `npm install && npm run setup` — 로그인만 새로 하고 생성 단계는 건너뜁니다 |
+| **같은 프로젝트를 이어서 개발** | 원래 PC 의 `packages/gas/.clasp.dev.json` 을 복사해 오고 `npm install` 후 `npm run setup` — 로그인만 새로 하고 생성 단계는 건너뜁니다 |
 | **완전히 새로 시작(다른 유저, 포크)** | `git clone → npm install → npm run setup` — 그 계정에 새 시트·스크립트·배포가 생깁니다 |
 | `.clasp.dev.json` 을 잃음 | `npm run clasp -- dev list-scripts` 로 scriptId 를 찾아 `.clasp.example.json` 을 복사해 채우기. deploymentId 는 `npm run clasp -- dev list-deployments` |
 
@@ -125,7 +126,7 @@ npx clasp logout                        # ~/.clasprc.json 삭제
 
 ```bash
 # appsscript.json 의 "access" 수정 후
-npm run push:dev && npm run deploy:dev
+npm run ship:dev        # = push:dev + deploy:dev
 ```
 
 `executeAs: USER_DEPLOYING` 이므로 어떤 값이든 **방문자는 승인 화면을 보지 않고**, 스크립트는 배포자 권한으로 시트를 읽습니다.

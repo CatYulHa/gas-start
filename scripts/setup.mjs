@@ -139,6 +139,9 @@ if (dryRun) {
 // ------------------------------------------------------------------ 7. open
 step("Done — your links");
 const webUrl = config.deploymentId ? urls.webApp(config.deploymentId) : "(deploy first)";
+const shipCmd = ["dev", "prod"].includes(env)
+  ? `npm run ship:${env}     push + deploy in one go`
+  : `npm run push:${env}, then npm run deploy:${env}`;
 console.log(`
   Web app   : ${webUrl}
   Editor    : ${config.scriptId ? urls.editor(config.scriptId) : "-"}
@@ -152,12 +155,13 @@ console.log(`
 
   Sharing: the web app is private to you (webapp.access = MYSELF). To share it, set
   "access" to "DOMAIN" (Workspace) or "ANYONE" in packages/gas/appsscript.json, then
-  npm run push:${env} && npm run deploy:${env}.   docs/deploy.md §7
+  ${shipCmd}.   docs/deploy.md §7
 
   Next steps
     npm run dev            edit the React dashboard locally with mock data
     npm run push:${env}      rebuild + upload after changing packages/gas or packages/dashboard
     npm run deploy:${env}    publish a new version to the same web-app URL
+    ${shipCmd}
     cd python && gasstart-sheets auth    (optional) pandas ETL into the sheet
 `);
 

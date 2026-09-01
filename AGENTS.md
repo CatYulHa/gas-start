@@ -42,7 +42,7 @@ gspread) ETL package. The spreadsheet is the database; the dashboard reads it vi
 ## Verify before finishing
 
 ```bash
-npm run typecheck && npm run build     # dist/Code.js (no export/import), dist/index.html (self-contained), appsscript.json
+npm run check     # dist/Code.js (no export/import), dist/index.html (self-contained), appsscript.json
 cd python && pytest && ruff check .    # only if python/ changed
 ```
 

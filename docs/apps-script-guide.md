@@ -60,7 +60,7 @@ GasStart 가 겨냥하는 바로 그 경우를 위해 Google Apps Script(GAS)의
 ```
 
 ```bash
-npm run push:prod && npm run deploy:prod      # 또는 dev
+npm run ship:prod      # = push:prod + deploy:prod (또는 ship:dev)
 ```
 
 - 배포 계정은 **회사 Workspace 계정**이어야 합니다(`clasp login` 시 그 계정으로). 개인 gmail 로 배포하면 `DOMAIN` 을 쓸 수 없습니다.
