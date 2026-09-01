@@ -1,0 +1,27 @@
+name: Feature request
+description: Suggest an addition to the starter (dashboard component, server helper, docs, tooling)
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      placeholder: "I want to restrict the dashboard to one Google Group, not the whole domain …"
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Which files/commands would change? Keep the starter small — prefer an example or a docs section over a new abstraction.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Dashboard (packages/dashboard)
+        - Apps Script backend (packages/gas)
+        - Setup / clasp scripts
+        - Python (gasstart-sheets)
+        - Docs

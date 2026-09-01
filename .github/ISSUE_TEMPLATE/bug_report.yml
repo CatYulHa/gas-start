@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in GasStart does not work (setup, build, push, deploy, dashboard, Python)
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The three questions below save a round trip — please fill them in.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where does it happen?
+      options:
+        - npm run setup (login / API check / create / push / deploy)
+        - Build (npm run build / check)
+        - Dashboard in the browser
+        - Apps Script backend (Code.gs)
+        - Python (gasstart-sheets)
+        - Docs
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+      placeholder: "Ran `npm run setup`; step 5 failed with … I expected …"
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Terminal output
+      description: Paste the full output of the failing command. Script IDs / deployment IDs are fine to include; never paste tokens or `.clasprc.json`.
+      render: shell
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS, Node version (`node -v`), clasp version (`npx clasp -v`), account type (personal Gmail / Workspace)
+      placeholder: "Windows 11, Node 24.x, clasp 3.4.1, Workspace"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before filing
+      options:
+        - label: I ran `npm run check` and it passes (or the failure is in that command)
+        - label: I searched existing issues
