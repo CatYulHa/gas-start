@@ -160,7 +160,7 @@ Codex, Cursor, Windsurf, Devin, Copilot, Claude Code 등 어떤 도구든 저장
 ### Python으로 시트에 데이터 넣기
 
 외부 API나 CSV를 pandas로 가공해 시트에 적재하는 도구입니다. 인증은 옛 Google 퀵스타트의 `token.pickle` 방식과 같습니다.
-OAuth 클라이언트 파일 하나를 받아 두면, 첫 실행에만 브라우저가 열리고 이후에는 `.secrets/token.json`을 재사용합니다.
+첫 실행에만 브라우저에서 Google 로그인을 하고, 이후에는 저장된 토큰을 재사용합니다. Google Cloud 프로젝트나 `credentials.json`은 필요 없습니다([pydata-google-auth](https://pydata-google-auth.readthedocs.io/)의 내장 OAuth 클라이언트를 씁니다). 로그인한 계정이 열 수 있는 시트라면 내 것이든 공유받은 것이든 바로 읽고 씁니다.
 
 ```bash
 cd python
@@ -169,7 +169,7 @@ python -m venv .venv
 source .venv/bin/activate      # macOS / Linux
 pip install -e ".[dev]"
 
-gasstart-sheets auth                              # 첫 실행: 브라우저 동의 → 토큰 저장
+gasstart-sheets auth                              # 첫 실행: 브라우저 로그인 → 토큰 저장(%APPDATA%\gasstart)
 gasstart-sheets seed  <SHEET_ID_or_URL>           # 샘플 데이터 → data 탭
 gasstart-sheets read  <SHEET_ID_or_URL> data -o out.csv
 gasstart-sheets write out.csv <SHEET_ID_or_URL> data
@@ -183,7 +183,7 @@ df = read_df(gc, "<SHEET_ID>", "data")
 write_df(gc, "<SHEET_ID>", "summary", df.groupby("category", as_index=False)["value"].sum())
 ```
 
-OAuth 클라이언트 만들기(1회), 환경변수, 서비스 계정 사용법은 [python/README.md](./python/README.md)에 있습니다.
+회사 정책상 자체 OAuth 클라이언트를 써야 할 때(`.secrets/credentials.json`), 환경변수, 서비스 계정 사용법은 [python/README.md](./python/README.md)에 있습니다.
 
 ## 회사에서 쓰기 — 누가 볼 수 있나
 
@@ -273,8 +273,8 @@ npm run ship:prod      # 이후 게시. URL은 고정됩니다
 | `Missing packages/gas/.clasp.dev.json` | `npm run setup` 또는 `.clasp.example.json` 복사 후 `scriptId` 입력 |
 | `Project file already exists` | `packages/gas/.clasp.json`을 삭제하고 다시 실행 |
 | clasp 명령이 문서와 다름 | clasp 3부터 `create-script`, `create-deployment` 등으로 바뀌었습니다. `npx clasp --help` |
-| Python `AuthError: No cached token` | `.secrets/credentials.json` 위치 확인 후 `gasstart-sheets auth` |
-| Python `access_denied` / 403 | OAuth 동의 화면의 테스트 사용자에 계정 추가, Sheets·Drive API 사용 설정 |
+| Python 첫 실행에 "확인되지 않은 앱" 경고 | 공용 OAuth 클라이언트에 붙는 기본 경고. 고급 → 이동 → 허용. 다시 로그인하려면 `gasstart-sheets auth --reset` |
+| Python 403 / `PERMISSION_DENIED` | 로그인한 Google 계정에 그 시트 권한이 있는지 확인(다른 계정으로 로그인했다면 `auth --reset`). 자체 OAuth 클라이언트를 쓰는 경우 동의 화면 테스트 사용자·Sheets/Drive API 활성화 |
 
 ## 더 읽기
 
@@ -283,7 +283,7 @@ npm run ship:prod      # 이후 게시. URL은 고정됩니다
 | [docs/apps-script-guide.md](./docs/apps-script-guide.md) | Apps Script를 서버리스 플랫폼으로 이해하기. `executeAs × access`, 도메인 제한, 사용자별 데이터, 관리자 정책, 할당량 |
 | [docs/deploy.md](./docs/deploy.md) | `setup`이 만드는 것, `/dev`와 `/exec`, dev → prod, 다른 PC에서 이어 쓰기, 삭제 |
 | [docs/ai-guide.md](./docs/ai-guide.md) | AI 코딩 도구로 대시보드 확장하기. 프롬프트 레시피 |
-| [python/README.md](./python/README.md) | Python 패키지: OAuth 클라이언트 만들기, 환경변수, 서비스 계정 |
+| [python/README.md](./python/README.md) | Python 패키지: 로그인 방식 세 가지(기본 / 자체 OAuth 클라이언트 / 서비스 계정), 환경변수 |
 | [SECURITY.md](./SECURITY.md) | 보안 기본값과 취약점 신고 |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | 기여 방법 |
 

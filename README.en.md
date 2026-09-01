@@ -92,14 +92,17 @@ and copies the clasp-relevant fields into `.clasp.json` right before each comman
 ```bash
 cd python
 pip install -e ".[dev]"
-gasstart-sheets auth                        # first run: browser consent -> .secrets/token.json
+gasstart-sheets auth                        # first run: browser sign-in -> token cached per user
 gasstart-sheets seed <SHEET_ID>             # sample data into the `data` tab
 gasstart-sheets read <SHEET_ID> data -o out.csv
 ```
 
-Credentials: create an OAuth client of type **Desktop app** in Google Cloud Console (with the
-Sheets and Drive APIs enabled) and save it as `.secrets/credentials.json`. Set
-`GASSTART_SERVICE_ACCOUNT=/path/sa.json` to use a service account instead (CI/bots).
+Sign-in works like the classic `token.pickle` quickstart: a browser login once, then a cached
+token. No Google Cloud project is needed — [pydata-google-auth](https://pydata-google-auth.readthedocs.io/)
+provides the OAuth client, and you can read/write every sheet the signed-in account can open.
+To use your own OAuth client instead (e.g. your organisation blocks third-party clients), save a
+**Desktop app** client as `.secrets/credentials.json`; set `GASSTART_SERVICE_ACCOUNT=/path/sa.json`
+for a service account (CI/bots). Details in [python/README.md](./python/README.md).
 
 See the Korean README for the full walkthrough, security notes and troubleshooting table.
 

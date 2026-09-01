@@ -1,24 +1,32 @@
 """Authentication with a cached user token.
 
-This mirrors the classic Google API quickstart pattern (``token.pickle``):
+Two user-token flows are supported; both mirror the classic Google API
+quickstart pattern (``token.pickle``): a browser consent screen once, then a
+refresh token cached on disk that every later call reuses silently.
 
-1. You download an OAuth client secret ("Desktop app") once -> ``credentials.json``.
-2. The first call opens a browser for consent and stores the resulting refresh
-   token in ``token.json``.
-3. Every later call reuses ``token.json`` silently (access tokens are refreshed
-   automatically). No browser, no re-consent, until you delete the file or the
-   refresh token is revoked.
+**Zero-setup (default when no ``credentials.json`` exists)** — ``pydata-google-auth``
+ships its own OAuth client, so you do not need a Google Cloud project at all:
 
-gspread implements exactly this via :func:`gspread.oauth`; we only fix the file
-locations (project-local ``.secrets/`` by default, git-ignored) and add a
-service-account escape hatch for CI/bots.
+1. First call opens the browser; sign in with the Google account that owns (or
+   was given access to) the spreadsheets you want to touch.
+2. The credentials are cached user-wide (``%APPDATA%\\gasstart`` on Windows,
+   ``~/.config/gasstart`` elsewhere) and reused from any project on this machine.
+
+**Own OAuth client (when ``.secrets/credentials.json`` exists)** — download an
+OAuth client secret ("Desktop app") from your own Cloud project; the token is
+cached project-locally in ``.secrets/token.json`` (git-ignored). Use this when
+your organisation blocks third-party OAuth clients or you want your own consent
+screen branding.
+
+**Service account (CI/bots)** — set ``GASSTART_SERVICE_ACCOUNT`` to a service
+account JSON and share the sheet with its e-mail; no browser is involved.
 
 Environment overrides:
 
 * ``GASSTART_CREDENTIALS``     path to the OAuth client file
-* ``GASSTART_TOKEN``           path to the cached user token
+* ``GASSTART_TOKEN``           path to the cached user token (own-client flow)
 * ``GASSTART_SERVICE_ACCOUNT`` path to a service-account JSON; when set, the
-  user-token flow is skipped entirely
+  user-token flows are skipped entirely
 """
 
 from __future__ import annotations
@@ -58,6 +66,10 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
+# pydata-google-auth cache: one file per user, shared by every project on the machine.
+PYDATA_CACHE_DIRNAME = "gasstart"
+PYDATA_CACHE_FILENAME = "google_user_credentials.json"
+
 
 class AuthError(RuntimeError):
     """Raised when no usable credentials can be found."""
@@ -94,12 +106,8 @@ def get_client(
     cred_path, token_path = resolve_paths(credentials, token)
 
     if not token_path.is_file() and not cred_path.is_file():
-        raise AuthError(
-            f"No cached token at {token_path} and no OAuth client file at {cred_path}.\n"
-            "Create an OAuth client ID of type 'Desktop app' in Google Cloud Console "
-            "(APIs & Services -> Credentials), download the JSON and save it as "
-            f"{cred_path}. Then run `gasstart-sheets auth` once to create the token."
-        )
+        # No OAuth client of your own -> use pydata-google-auth's built-in client.
+        return _pydata_client(scopes or SCOPES)
 
     token_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     client = gspread.oauth(
@@ -109,6 +117,52 @@ def get_client(
     )
     _restrict_permissions(token_path)
     return client
+
+
+def _pydata_cache():
+    """The pydata-google-auth credentials cache used by the zero-setup flow."""
+    from pydata_google_auth.cache import ReadWriteCredentialsCache
+
+    return ReadWriteCredentialsCache(dirname=PYDATA_CACHE_DIRNAME, filename=PYDATA_CACHE_FILENAME)
+
+
+def pydata_cache_path() -> Path:
+    """Where the zero-setup flow stores the cached user credentials."""
+    return Path(_pydata_cache()._path)
+
+
+def _pydata_client(scopes: list[str]) -> gspread.Client:
+    """Browser consent once via pydata-google-auth's own OAuth client, then a cached token.
+
+    Google shows an "unverified app" warning for the Sheets scope on the first
+    consent; that is expected for the shared client (Advanced -> Go to ... -> Allow).
+    """
+    try:
+        import pydata_google_auth
+    except ImportError as e:  # pragma: no cover - dependency is declared, but be explicit
+        raise AuthError(
+            "pydata-google-auth is not installed. Run `pip install pydata-google-auth`, "
+            "or provide your own OAuth client file (see python/README.md)."
+        ) from e
+
+    creds = pydata_google_auth.get_user_credentials(
+        scopes,
+        credentials_cache=_pydata_cache(),
+        use_local_webserver=True,
+    )
+    _restrict_permissions(pydata_cache_path())
+    return gspread.authorize(creds)
+
+
+def auth_mode() -> tuple[str, Path]:
+    """Report which flow :func:`get_client` will use and where its token lives."""
+    sa = os.environ.get("GASSTART_SERVICE_ACCOUNT")
+    if sa:
+        return "service-account", Path(sa)
+    cred_path, token_path = resolve_paths()
+    if token_path.is_file() or cred_path.is_file():
+        return "oauth-client", token_path
+    return "pydata", pydata_cache_path()
 
 
 def _restrict_permissions(path: Path) -> None:
@@ -121,9 +175,14 @@ def _restrict_permissions(path: Path) -> None:
 
 
 def revoke_token(token: str | os.PathLike[str] | None = None) -> bool:
-    """Delete the cached token so the next call re-runs the browser consent. Returns True if removed."""
+    """Delete the cached token(s) so the next call re-runs the browser consent. True if any removed."""
+    removed = False
     _, token_path = resolve_paths(None, token)
     if token_path.is_file():
         token_path.unlink()
-        return True
-    return False
+        removed = True
+    cache = pydata_cache_path()
+    if cache.is_file():
+        cache.unlink()
+        removed = True
+    return removed

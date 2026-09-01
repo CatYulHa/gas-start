@@ -43,9 +43,7 @@ def open_spreadsheet(gc: gspread.Client, ref: str) -> gspread.Spreadsheet:
     return gc.open(ref)
 
 
-def get_worksheet(
-    spreadsheet: gspread.Spreadsheet, name: str, *, create: bool = False
-) -> gspread.Worksheet:
+def get_worksheet(spreadsheet: gspread.Spreadsheet, name: str, *, create: bool = False) -> gspread.Worksheet:
     try:
         return spreadsheet.worksheet(name)
     except gspread.WorksheetNotFound:

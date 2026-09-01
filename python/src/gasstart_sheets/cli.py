@@ -9,7 +9,7 @@ import pandas as pd
 import typer
 
 from . import __version__
-from .auth import AuthError, get_client, resolve_paths, revoke_token
+from .auth import AuthError, auth_mode, get_client, revoke_token
 from .sample import sample_frame
 from .sheets import read_df, write_df
 
@@ -52,16 +52,18 @@ def auth(
         bool, typer.Option("--reset", help="Delete the cached token and re-authenticate")
     ] = False,
 ) -> None:
-    """Run the OAuth consent flow once and cache the token (later commands need no browser)."""
-    cred, tok = resolve_paths()
+    """Sign in once in the browser and cache the token (later commands need no browser).
+
+    Without a .secrets/credentials.json of your own this uses pydata-google-auth's
+    built-in OAuth client, so no Google Cloud project is needed.
+    """
     if reset and revoke_token():
-        typer.echo(f"Removed cached token {tok}")
+        typer.echo("Removed cached token(s)")
+    mode, tok = auth_mode()
     had_token = tok.is_file()
-    gc = _client()
-    # Touch the API so a stale/revoked token fails here rather than in a later command.
-    gc.list_spreadsheet_files()
+    _client()
     typer.secho("Authenticated.", fg=typer.colors.GREEN)
-    typer.echo(f"  client secret : {cred}")
+    typer.echo(f"  mode          : {mode}")
     typer.echo(f"  cached token  : {tok} ({'reused' if had_token else 'created'})")
 
 
