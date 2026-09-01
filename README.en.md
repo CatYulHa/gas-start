@@ -8,6 +8,8 @@ HTML file through HtmlService, and load data into the spreadsheet with Python (p
 
 [한국어 README](./README.md)
 
+![GasStart dashboard — KPI tiles, per-category line chart, data table](./docs/images/dashboard.png)
+
 ```
 Python ETL ──write──▶  Google Sheets (as DB)  ◀──read──  Apps Script (TS)  ──HtmlService──▶  React dashboard
 gasstart-sheets seed         `data` tab                  getDashboardData()  google.script.run    KPIs · chart · table
