@@ -1,5 +1,7 @@
 # GasStart
 
+[![CI](https://github.com/CatYulHa/gas-start/actions/workflows/ci.yml/badge.svg)](https://github.com/CatYulHa/gas-start/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 **Google Apps Script 스타터 키트** — 서버·인프라 없이 회사 안에서(또는 개인적으로) 대시보드/웹앱을 띄우기 위한 템플릿.
 TypeScript 로 짜고, `clasp` 로 dev/prod 를 나눠 배포하고, React + Vite 대시보드를 단일 HTML 로 번들해 GAS 웹앱으로 서빙하고,
 Python(pandas + gspread) 으로 스프레드시트에 데이터를 적재합니다. 같은 회사 도메인만 접근하게 하는 설정은 [docs/apps-script-guide.md](./docs/apps-script-guide.md).

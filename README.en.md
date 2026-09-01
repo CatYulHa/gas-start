@@ -1,5 +1,7 @@
 # GasStart
 
+[![CI](https://github.com/CatYulHa/gas-start/actions/workflows/ci.yml/badge.svg)](https://github.com/CatYulHa/gas-start/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 **A Google Apps Script starter kit** — write the backend in TypeScript, push/deploy to
 separate dev and prod projects with `clasp`, ship a React + Vite dashboard as a single
 HTML file through HtmlService, and load data into the spreadsheet with Python (pandas + gspread).
